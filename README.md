@@ -1,12 +1,43 @@
-# React + Vite
+# 🚀 Smart Investment Tracker  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📌 Overview  
+Smart Investment Tracker is a **unified financial management app** that allows users to **track, compare, and invest** in mutual funds (MFs) and stocks from multiple platforms—**all in one place**. With AI-driven insights, a user-friendly interface, and one-click execution, this app simplifies investment decisions for both beginners and experienced investors.  
 
-Currently, two official plugins are available:
+## 🌟 Key Features  
+### 1️⃣ Automatic Portfolio Tracking  
+- Fetches data from **MF Central API, broker APIs**   
+- Just like **PhonePe for bank balances**, but for stocks & mutual funds.  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 2️⃣ Smart AI-Powered Comparison Tool  
+- Uses **AI/ML** to recommend **better performing** funds & stocks.  
+- Simple visual indicators like:  
+  - **Trust Score** (⭐ ratings like Uber drivers)  
+  - **Risk Meter** (🟢 Low | 🟠 Medium | 🔴 High)  
+  - **Projected Returns** ("₹10,000 → ₹12,000 in 1 year" 📈)  
+- Example: *“Fund A is better than Fund B: 15% returns, same risk. Switch now? ✅”*  
 
-## Expanding the ESLint configuration
+### 3️⃣ One Dashboard for Tracking + Execution  
+- See all **MFs + stocks** in a **single interactive dashboard**.   
+- No need to log in separately to MF Central or broker platforms.  
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 4️⃣ Super Simple & Interactive UI  
+  
+- Uses **icons & plain-English summaries** for easy understanding.  
+- **One-click actions**:  
+  - *Compare funds* (like Amazon product comparison)  
+  - *Quick Invest* (like Uber’s "Book Ride")  
+  
+
+## ⚙️ Tech Stack  
+- **Frontend**: React.js   
+- **Backend**: Node.js / Firebase 
+- **Database**: Firestore Database  
+- **APIs**: MFU API, Broker APIs  
+- **AI/ML**: Python (scikit-learn, TensorFlow)  
+
+## 📜 License  
+MIT License  
+
+---
+
+💡 **Built with love for investors!** 💙🚀  
