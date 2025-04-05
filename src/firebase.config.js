@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -23,7 +23,6 @@ let app;
 let auth;
 let db;
 let analytics;
-let googleProvider;
 let isFirebaseAuthAvailable = false;
 
 try {
@@ -36,10 +35,6 @@ try {
   if (auth) {
     isFirebaseAuthAvailable = true;
     console.log("Firebase Auth initialized successfully");
-    
-    // Initialize Google Auth Provider
-    googleProvider = new GoogleAuthProvider();
-    console.log("Google Auth Provider initialized");
   }
 
   // Initialize Firestore
@@ -61,4 +56,4 @@ try {
   isFirebaseAuthAvailable = false;
 }
 
-export { app, analytics, auth, db, googleProvider, isFirebaseAuthAvailable };
+export { app, analytics, auth, db, isFirebaseAuthAvailable };
