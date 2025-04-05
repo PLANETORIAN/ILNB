@@ -14,6 +14,7 @@ import {
   setDoc
 } from 'firebase/firestore';
 import { db, auth, isFirebaseAuthAvailable } from '../firebase.config';
+import transactionService from './transactionServices';
 
 // Import mock data
 const mockPortfolioData = {
@@ -232,6 +233,19 @@ const portfolioService = {
           }
         }
         
+        // Log the transaction
+        await transactionService.addTransaction({
+          type: type, // 'buy' or 'sell'
+          investmentType: transaction.investmentType || 'unknown',
+          symbol: transaction.symbol,
+          name: transaction.name,
+          platform: platform,
+          quantity: quantity,
+          price: price,
+          totalAmount: price * quantity,
+          status: 'completed'
+        });
+        
         return { success: true };
       }
 
@@ -317,6 +331,19 @@ const portfolioService = {
           });
         }
       }
+      
+      // Log the transaction in Firestore
+      await transactionService.addTransaction({
+        type: type, // 'buy' or 'sell'
+        investmentType: transaction.investmentType || 'unknown',
+        symbol: transaction.symbol,
+        name: transaction.name,
+        platform: platform,
+        quantity: quantity,
+        price: price,
+        totalAmount: price * quantity,
+        status: 'completed'
+      });
       
       return { success: true };
     } catch (error) {
