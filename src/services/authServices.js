@@ -3,9 +3,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signInWithPopup
 } from 'firebase/auth';
-import { auth, db, isFirebaseAuthAvailable } from '../firebase.config';
+import { auth, db, googleProvider, isFirebaseAuthAvailable } from '../firebase.config';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 // Mock user storage for development when Firebase auth is not available
@@ -79,6 +80,50 @@ const authService = {
       }
     } catch (error) {
       console.error('Login failed:', error.message || error);
+      throw error;
+    }
+  },
+  
+  // Google sign-in
+  googleSignIn: async () => {
+    try {
+      if (validateFirebaseAuth()) {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        
+        // Check if user document exists in Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        
+        // If user document doesn't exist, create one
+        if (!userDoc.exists()) {
+          await setDoc(userDocRef, {
+            name: user.displayName || '',
+            email: user.email,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            portfolioIds: [],
+            preferences: {},
+            // Initialize with empty portfolio data
+            portfolio: {
+              mutualFunds: [],
+              stocks: [],
+              totalValue: 0,
+              platformBreakdown: {}
+            }
+          });
+          console.log("User document created in Firestore after Google sign-in");
+        }
+        
+        saveUserToLocalStorage(user);
+        return user;
+      } else {
+        // Mock Google login for development
+        console.log("Using mock Google authentication (Firebase Auth not available)");
+        throw { code: 'auth/operation-not-supported', message: 'Google Sign-in not available in mock mode' };
+      }
+    } catch (error) {
+      console.error('Google sign-in failed:', error.message || error);
       throw error;
     }
   },
