@@ -1035,4 +1035,4 @@ function Compare() {
   );
 }
 
-export default Compare;
+export default Compare; 

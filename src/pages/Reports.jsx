@@ -3,14 +3,122 @@ import { useTheme } from '@/context/ThemeContext';
 import Card from '@/components/common/Card';
 import { ArrowUp, ArrowDown, AlertTriangle, BarChart2, LineChart, PieChart, Calendar } from 'lucide-react';
 import React from 'react';
+import userInvestmentData from '../data/userInvestmentData.json';
 
 function Reports() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('performance');
+  const [allocationData, setAllocationData] = useState([]);
   const { isDarkMode } = useTheme();
 
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 800);
+  }, []);
+
+  // Calculate allocation data from user investments
+  useEffect(() => {
+    if (userInvestmentData && userInvestmentData.userData && userInvestmentData.userData.investments) {
+      const { stocks = [], mutualFunds = [], indexFunds = [] } = userInvestmentData.userData.investments;
+      
+      // Calculate total value for each investment type
+      let stocksValue = 0;
+      let mutualFundsValue = 0;
+      let indexFundsValue = 0;
+      
+      // Process stocks
+      stocks.forEach(stock => {
+        const { symbol, quantity } = stock;
+        // Fixed prices for known stocks
+        const stockPrices = {
+          'TCS': 3800,
+          'BHARTIARTL': 1200,
+          'ICICIBANK': 1050,
+          'HINDUNILVR': 2500,
+          'RELIANCE': 2900,
+          'ADANIPORTS': 850
+        };
+        
+        const price = stockPrices[symbol] || 1000;
+        stocksValue += quantity * price;
+      });
+      
+      // Process mutual funds
+      mutualFunds.forEach(fund => {
+        const { symbol, units } = fund;
+        // Fixed NAVs for known mutual funds
+        const fundNavs = {
+          'SBIBLUECHIP': 85,
+          'MAEBL': 95,
+          'PPFCF': 55,
+          'AXISMID': 70,
+          'HDFCSMALL': 65,
+          'ICICIPRUTECH': 75
+        };
+        
+        const nav = fundNavs[symbol] || 60;
+        mutualFundsValue += units * nav;
+      });
+      
+      // Process index funds
+      indexFunds.forEach(fund => {
+        const { symbol, units } = fund;
+        // Fixed NAVs for known index funds
+        const indexNavs = {
+          'UTINIFTY': 120,
+          'HDFCSENSEX': 150,
+          'SBINIFTY': 110,
+          'NRIINDEX': 130,
+          'ICICINN50': 100
+        };
+        
+        const nav = indexNavs[symbol] || 100;
+        indexFundsValue += units * nav;
+      });
+      
+      // Calculate total value
+      const totalValue = stocksValue + mutualFundsValue + indexFundsValue;
+      
+      // Calculate percentages and create allocation data
+      const newAllocationData = [];
+      
+      if (stocksValue > 0) {
+        newAllocationData.push({
+          category: 'Stocks',
+          percentage: Math.round((stocksValue / totalValue) * 100),
+          color: 'purple',
+          value: stocksValue
+        });
+      }
+      
+      if (mutualFundsValue > 0) {
+        newAllocationData.push({
+          category: 'Mutual Funds',
+          percentage: Math.round((mutualFundsValue / totalValue) * 100),
+          color: 'blue',
+          value: mutualFundsValue
+        });
+      }
+      
+      if (indexFundsValue > 0) {
+        newAllocationData.push({
+          category: 'Index Funds',
+          percentage: Math.round((indexFundsValue / totalValue) * 100),
+          color: 'green',
+          value: indexFundsValue
+        });
+      }
+      
+      // Ensure percentages sum to 100%
+      let totalPercentage = newAllocationData.reduce((sum, item) => sum + item.percentage, 0);
+      
+      if (totalPercentage !== 100 && newAllocationData.length > 0) {
+        // Find the largest category to adjust
+        newAllocationData.sort((a, b) => b.percentage - a.percentage);
+        newAllocationData[0].percentage += 100 - totalPercentage;
+      }
+      
+      setAllocationData(newAllocationData);
+    }
   }, []);
 
   // Sample data for demonstration
@@ -21,14 +129,6 @@ function Reports() {
     { month: 'Apr', value: 9.1 },
     { month: 'May', value: 8.4 },
     { month: 'Jun', value: 10.7 },
-  ];
-
-  const allocationData = [
-    { category: 'Stocks', percentage: 45, color: 'purple' },
-    { category: 'Bonds', percentage: 25, color: 'blue' },
-    { category: 'Crypto', percentage: 15, color: 'orange' },
-    { category: 'Cash', percentage: 10, color: 'green' },
-    { category: 'Commodities', percentage: 5, color: 'red' },
   ];
 
   const recentTransactions = [
@@ -238,6 +338,18 @@ function Reports() {
                       </div>
                     </div>
                   ))}
+                  <div className="mt-6 pt-4 border-t border-gray-700">
+                    {allocationData.map((item, index) => (
+                      <div key={index} className="flex justify-between text-sm mb-2">
+                        <span>{item.category}:</span>
+                        <span className="font-medium">₹{item.value.toLocaleString()}</span>
+                      </div>
+                    ))}
+                    <div className="mt-3 pt-3 border-t border-gray-700 flex justify-between font-bold">
+                      <span>Total Investment:</span>
+                      <span>₹{allocationData.reduce((sum, item) => sum + item.value, 0).toLocaleString()}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Card>

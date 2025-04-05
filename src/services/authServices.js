@@ -3,10 +3,9 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
-  onAuthStateChanged,
-  signInWithPopup
+  onAuthStateChanged
 } from 'firebase/auth';
-import { auth, db, isFirebaseAuthAvailable, googleAuthProvider } from '../firebase.config';
+import { auth, db, isFirebaseAuthAvailable } from '../firebase.config';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 // Mock user storage for development when Firebase auth is not available
@@ -84,62 +83,6 @@ const authService = {
     }
   },
 
-  // Google Sign-in
-  signInWithGoogle: async () => {
-    try {
-      if (validateFirebaseAuth()) {
-        const result = await signInWithPopup(auth, googleAuthProvider);
-        const user = result.user;
-        
-        // Check if user document exists, if not create it
-        const userDocRef = doc(db, "users", user.uid);
-        const userSnapshot = await getDoc(userDocRef);
-        
-        if (!userSnapshot.exists()) {
-          // Create initial user document in Firestore
-          await setDoc(userDocRef, {
-            name: user.displayName || '',
-            email: user.email,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            portfolioIds: [],
-            preferences: {},
-            // Initialize with empty portfolio data
-            portfolio: {
-              mutualFunds: [],
-              stocks: [],
-              totalValue: 0,
-              platformBreakdown: {}
-            },
-            // Add transaction history collection
-            transactionHistory: []
-          });
-        }
-        
-        saveUserToLocalStorage(user);
-        return user;
-      } else {
-        // Mock Google sign-in for development
-        console.log("Using mock authentication for Google Sign-in (Firebase Auth not available)");
-        
-        const mockUser = {
-          uid: `google_mock_${Date.now()}`,
-          email: `google_user_${Date.now()}@gmail.com`,
-          displayName: 'Google User',
-          photoURL: 'https://lh3.googleusercontent.com/a/default-user',
-          createdAt: new Date().toISOString()
-        };
-        
-        mockCurrentUser = mockUser;
-        saveUserToLocalStorage(mockCurrentUser);
-        return mockCurrentUser;
-      }
-    } catch (error) {
-      console.error('Google Sign-in failed:', error.message || error);
-      throw error;
-    }
-  },
-
   // Register new user
   register: async (userData) => {
     try {
@@ -163,7 +106,6 @@ const authService = {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             portfolioIds: [],
-            transactionHistory: [],
             preferences: {},
             // Initialize with empty portfolio data
             portfolio: {

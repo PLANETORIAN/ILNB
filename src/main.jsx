@@ -8,6 +8,7 @@ import './index.css'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { PortfolioProvider } from './context/PortfolioContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { UserInvestmentsProvider } from './context/UserInvestmentsContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -15,7 +16,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <PortfolioProvider>
           <ThemeProvider>
-            <App />
+            <UserInvestmentsProvider>
+              <App />
+            </UserInvestmentsProvider>
           </ThemeProvider>
         </PortfolioProvider>
       </AuthProvider>

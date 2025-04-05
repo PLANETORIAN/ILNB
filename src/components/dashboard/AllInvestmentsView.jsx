@@ -1,63 +1,147 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../common/Card';
-import api from '../../services/api';
+import { useUserInvestments } from '../../context/UserInvestmentsContext';
+import { ChevronDown } from 'lucide-react';
 
 const AllInvestmentsView = () => {
-  const [investmentsData, setInvestmentsData] = useState(null);
+  const { userInvestments, isLoading: contextLoading } = useUserInvestments();
+  const [processedData, setProcessedData] = useState(null);
   const [filterPlatform, setFilterPlatform] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [sortBy, setSortBy] = useState('value');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAllInvestments = async () => {
-      setIsLoading(true);
-      try {
-        const response = await api.portfolio.getAll();
-        setInvestmentsData(response.data);
-      } catch (error) {
-        console.error('Error fetching all investments:', error);
-        // Fallback data
-        setInvestmentsData({
-          platforms: [
-            { id: 'zerodha', name: 'Zerodha', totalValue: 50000, returns: 12.5 },
-            { id: 'groww', name: 'Groww', totalValue: 33000, returns: 8.2 },
-            { id: 'coin', name: 'Coin by Zerodha', totalValue: 16500, returns: 7.8 },
-            { id: 'upstox', name: 'Upstox', totalValue: 11000, returns: 5.5 },
-          ],
-          investments: [
-            { id: 1, name: 'HDFC Bank', type: 'stock', platform: 'zerodha', value: 15000, returns: 18.5, quantity: 10 },
-            { id: 2, name: 'Axis Bluechip Fund', type: 'mutual_fund', platform: 'groww', value: 20000, returns: 12.3, quantity: null },
-            { id: 3, name: 'Reliance Industries', type: 'stock', platform: 'upstox', value: 8000, returns: 6.8, quantity: 5 },
-            { id: 4, name: 'ICICI Prudential Balanced Advantage', type: 'mutual_fund', platform: 'coin', value: 12500, returns: 9.4, quantity: null },
-            { id: 5, name: 'ITC Ltd', type: 'stock', platform: 'zerodha', value: 5500, returns: -2.1, quantity: 25 },
-            { id: 6, name: 'SBI Gold ETF', type: 'etf', platform: 'groww', value: 7500, returns: 15.2, quantity: null },
-            { id: 7, name: 'Mirae Asset Emerging Bluechip', type: 'mutual_fund', platform: 'coin', value: 4000, returns: 22.8, quantity: null },
-            { id: 8, name: 'Bajaj Finance', type: 'stock', platform: 'zerodha', value: 12000, returns: 8.9, quantity: 6 },
-            { id: 9, name: 'Parag Parikh Flexi Cap Fund', type: 'mutual_fund', platform: 'groww', value: 5500, returns: 14.7, quantity: null },
-            { id: 10, name: 'Tata Motors', type: 'stock', platform: 'upstox', value: 3000, returns: 4.2, quantity: 15 },
-          ],
-          types: [
-            { id: 'stock', name: 'Stocks', totalValue: 43500, returns: 9.2 },
-            { id: 'mutual_fund', name: 'Mutual Funds', totalValue: 42000, returns: 13.8 },
-            { id: 'etf', name: 'ETFs', totalValue: 7500, returns: 15.2 },
-            { id: 'bond', name: 'Bonds', totalValue: 17500, returns: 6.5 },
-          ],
-          totalValue: 110500,
-          totalReturns: 10.8,
-        });
-      } finally {
+    const processInvestmentsData = () => {
+      if (!userInvestments || !userInvestments.userData || !userInvestments.userData.investments) {
         setIsLoading(false);
+        return;
       }
+
+      const { stocks = [], mutualFunds = [], indexFunds = [] } = userInvestments.userData.investments;
+
+      // Transform to a unified format for display
+      const allInvestments = [
+        ...stocks.map(stock => ({
+          id: stock.id,
+          name: stock.stockName,
+          symbol: stock.symbol,
+          type: 'stock',
+          platform: stock.brokerPlatform,
+          quantity: stock.quantity,
+          value: (Math.random() * 15000 + 5000).toFixed(0), // Mock value for demo
+          purchaseDate: stock.purchaseDate,
+          returns: (Math.random() * 25 - 5).toFixed(1) // Mock returns for demo
+        })),
+        ...mutualFunds.map(fund => ({
+          id: fund.id,
+          name: fund.fundName,
+          symbol: fund.symbol,
+          type: 'mutual_fund',
+          platform: fund.brokerPlatform,
+          quantity: fund.units,
+          value: (Math.random() * 20000 + 3000).toFixed(0), // Mock value for demo
+          purchaseDate: fund.purchaseDate,
+          returns: (Math.random() * 20 + 2).toFixed(1) // Mock returns for demo
+        })),
+        ...indexFunds.map(fund => ({
+          id: fund.id,
+          name: fund.fundName,
+          symbol: fund.symbol,
+          type: 'index_fund',
+          platform: fund.brokerPlatform,
+          quantity: fund.units,
+          value: (Math.random() * 10000 + 3000).toFixed(0), // Mock value for demo
+          purchaseDate: fund.purchaseDate,
+          returns: (Math.random() * 15 + 5).toFixed(1) // Mock returns for demo
+        }))
+      ];
+
+      // Calculate platform summaries
+      const platformMap = {};
+      allInvestments.forEach(inv => {
+        if (!platformMap[inv.platform]) {
+          platformMap[inv.platform] = {
+            id: inv.platform,
+            name: getPlatformDisplayName(inv.platform),
+            totalValue: 0,
+            investments: [],
+            returns: 0
+          };
+        }
+        platformMap[inv.platform].investments.push(inv);
+        platformMap[inv.platform].totalValue += Number(inv.value);
+      });
+
+      // Calculate average returns for each platform
+      Object.values(platformMap).forEach(platform => {
+        if (platform.investments.length > 0) {
+          const totalReturns = platform.investments.reduce((sum, inv) => sum + Number(inv.returns), 0);
+          platform.returns = (totalReturns / platform.investments.length).toFixed(1);
+        }
+      });
+
+      // Calculate type summaries
+      const typeMap = {
+        stock: { id: 'stock', name: 'Stocks', totalValue: 0, returns: 0, count: 0 },
+        mutual_fund: { id: 'mutual_fund', name: 'Mutual Funds', totalValue: 0, returns: 0, count: 0 },
+        index_fund: { id: 'index_fund', name: 'Index Funds', totalValue: 0, returns: 0, count: 0 },
+        etf: { id: 'etf', name: 'ETFs', totalValue: 0, returns: 0, count: 0 }
+      };
+
+      allInvestments.forEach(inv => {
+        if (typeMap[inv.type]) {
+          typeMap[inv.type].totalValue += Number(inv.value);
+          typeMap[inv.type].returns += Number(inv.returns);
+          typeMap[inv.type].count++;
+        }
+      });
+
+      // Calculate average returns for each type
+      Object.values(typeMap).forEach(type => {
+        if (type.count > 0) {
+          type.returns = (type.returns / type.count).toFixed(1);
+        }
+      });
+
+      // Calculate total portfolio value and returns
+      const totalValue = allInvestments.reduce((sum, inv) => sum + Number(inv.value), 0);
+      const totalReturns = allInvestments.length > 0
+        ? (allInvestments.reduce((sum, inv) => sum + Number(inv.returns), 0) / allInvestments.length).toFixed(1)
+        : 0;
+
+      setProcessedData({
+        platforms: Object.values(platformMap),
+        investments: allInvestments,
+        types: Object.values(typeMap).filter(type => type.count > 0),
+        totalValue,
+        totalReturns
+      });
+
+      setIsLoading(false);
     };
 
-    fetchAllInvestments();
-  }, []);
+    if (!contextLoading) {
+      processInvestmentsData();
+    }
+  }, [userInvestments, contextLoading]);
+
+  const getPlatformDisplayName = (platformId) => {
+    const displayNames = {
+      'zerodha': 'Zerodha',
+      'groww': 'Groww',
+      'upstox': 'Upstox',
+      'kuvera': 'Kuvera',
+      'mfcentral': 'MF Central',
+      'coin': 'Coin by Zerodha'
+    };
+    return displayNames[platformId] || platformId;
+  };
 
   const filterInvestments = () => {
-    if (!investmentsData) return [];
+    if (!processedData) return [];
     
-    let filtered = [...investmentsData.investments];
+    let filtered = [...processedData.investments];
     
     if (filterPlatform !== 'all') {
       filtered = filtered.filter(investment => investment.platform === filterPlatform);
@@ -83,23 +167,18 @@ const AllInvestmentsView = () => {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const getPlatformName = (platformId) => {
-    if (!investmentsData) return platformId;
-    const platform = investmentsData.platforms.find(p => p.id === platformId);
-    return platform ? platform.name : platformId;
+    return `₹${Number(amount).toLocaleString('en-IN')}`;
   };
 
   const getInvestmentTypeName = (typeId) => {
-    if (!investmentsData) return typeId;
-    const type = investmentsData.types.find(t => t.id === typeId);
-    return type ? type.name : typeId;
+    const typeNames = {
+      'stock': 'Stocks',
+      'mutual_fund': 'Mutual Funds',
+      'index_fund': 'Index Funds',
+      'etf': 'ETFs',
+      'bond': 'Bonds'
+    };
+    return typeNames[typeId] || typeId;
   };
 
   if (isLoading) {
@@ -115,6 +194,19 @@ const AllInvestmentsView = () => {
     );
   }
 
+  if (!processedData) {
+    return (
+      <Card className="h-full">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-semibold">All Investments</h2>
+        </div>
+        <div className="flex justify-center items-center h-40">
+          <p className="text-gray-400">No investment data available</p>
+        </div>
+      </Card>
+    );
+  }
+
   const filteredInvestments = filterInvestments();
 
   return (
@@ -122,41 +214,52 @@ const AllInvestmentsView = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 className="text-xl font-semibold">All Investments</h2>
         <div className="flex flex-wrap gap-2">
-          <select
-            className="bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-purple-500"
-            value={filterPlatform}
-            onChange={(e) => setFilterPlatform(e.target.value)}
-          >
-            <option value="all">All Platforms</option>
-            {investmentsData.platforms.map(platform => (
-              <option key={platform.id} value={platform.id}>{platform.name}</option>
-            ))}
-          </select>
-          <select
-            className="bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-purple-500"
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-          >
-            <option value="all">All Types</option>
-            {investmentsData.types.map(type => (
-              <option key={type.id} value={type.id}>{type.name}</option>
-            ))}
-          </select>
-          <select
-            className="bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-purple-500"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="value">Sort by Value</option>
-            <option value="returns">Sort by Returns</option>
-            <option value="name">Sort by Name</option>
-          </select>
+          <div className="relative">
+            <select
+              className="bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-purple-500 pr-8 appearance-none"
+              value={filterPlatform}
+              onChange={(e) => setFilterPlatform(e.target.value)}
+            >
+              <option value="all">All Platforms</option>
+              {processedData.platforms.map(platform => (
+                <option key={platform.id} value={platform.id}>{platform.name}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none" />
+          </div>
+          
+          <div className="relative">
+            <select
+              className="bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-purple-500 pr-8 appearance-none"
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+            >
+              <option value="all">All Types</option>
+              {processedData.types.map(type => (
+                <option key={type.id} value={type.id}>{type.name}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none" />
+          </div>
+          
+          <div className="relative">
+            <select
+              className="bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-purple-500 pr-8 appearance-none"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="value">Sort by Value</option>
+              <option value="returns">Sort by Returns</option>
+              <option value="name">Sort by Name</option>
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 pointer-events-none" />
+          </div>
         </div>
       </div>
 
       {/* Platform Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        {investmentsData.platforms.map(platform => (
+        {processedData.platforms.map(platform => (
           <div 
             key={platform.id} 
             className={`p-3 rounded-lg cursor-pointer ${filterPlatform === platform.id ? 'bg-purple-600/30 border border-purple-500/50' : 'bg-white/5 hover:bg-white/10'}`}
@@ -164,8 +267,8 @@ const AllInvestmentsView = () => {
           >
             <p className="text-sm font-medium">{platform.name}</p>
             <p className="text-lg font-bold mt-1">{formatCurrency(platform.totalValue)}</p>
-            <p className={`text-xs mt-1 ${platform.returns >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-              {platform.returns > 0 ? '+' : ''}{platform.returns}% return
+            <p className={`text-xs mt-1 ${Number(platform.returns) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {Number(platform.returns) > 0 ? '+' : ''}{platform.returns}% return
             </p>
           </div>
         ))}
@@ -190,11 +293,11 @@ const AllInvestmentsView = () => {
                 className="border-b border-white/5 hover:bg-white/5 cursor-pointer"
               >
                 <td className="text-sm font-medium px-2 py-3">{investment.name}</td>
-                <td className="text-sm px-2 py-3">{getPlatformName(investment.platform)}</td>
+                <td className="text-sm px-2 py-3">{getPlatformDisplayName(investment.platform)}</td>
                 <td className="text-sm px-2 py-3">{getInvestmentTypeName(investment.type)}</td>
                 <td className="text-sm text-right px-2 py-3">{formatCurrency(investment.value)}</td>
-                <td className={`text-sm text-right px-2 py-3 ${investment.returns >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {investment.returns > 0 ? '+' : ''}{investment.returns}%
+                <td className={`text-sm text-right px-2 py-3 ${Number(investment.returns) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {Number(investment.returns) > 0 ? '+' : ''}{investment.returns}%
                 </td>
               </tr>
             ))}
@@ -212,12 +315,12 @@ const AllInvestmentsView = () => {
         <div className="flex justify-between items-center">
           <div>
             <p className="text-sm text-gray-400">Total Assets</p>
-            <p className="text-lg font-bold">{formatCurrency(investmentsData.totalValue)}</p>
+            <p className="text-lg font-bold">{formatCurrency(processedData.totalValue)}</p>
           </div>
           <div className="text-right">
             <p className="text-sm text-gray-400">Overall Returns</p>
-            <p className={`text-lg font-bold ${investmentsData.totalReturns >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-              {investmentsData.totalReturns > 0 ? '+' : ''}{investmentsData.totalReturns}%
+            <p className={`text-lg font-bold ${Number(processedData.totalReturns) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {Number(processedData.totalReturns) > 0 ? '+' : ''}{processedData.totalReturns}%
             </p>
           </div>
         </div>

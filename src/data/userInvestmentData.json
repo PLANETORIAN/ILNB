@@ -1,0 +1,168 @@
+{
+  "userData": {
+    "userId": "user123",
+    "name": "John Smith",
+    "email": "john.smith@example.com",
+    "investments": {
+      "stocks": [
+        {
+          "id": "stock_inv_1",
+          "stockName": "Tata Consultancy Services",
+          "symbol": "TCS",
+          "investmentType": "stock",
+          "brokerPlatform": "zerodha",
+          "quantity": 15,
+          "purchaseDate": "2023-05-15"
+        },
+        {
+          "id": "stock_inv_2",
+          "stockName": "Bharti Airtel",
+          "symbol": "BHARTIARTL",
+          "investmentType": "stock",
+          "brokerPlatform": "upstox",
+          "quantity": 30,
+          "purchaseDate": "2023-08-10"
+        },
+        {
+          "id": "stock_inv_3",
+          "stockName": "ICICI Bank",
+          "symbol": "ICICIBANK",
+          "investmentType": "stock",
+          "brokerPlatform": "groww",
+          "quantity": 40,
+          "purchaseDate": "2023-11-22"
+        },
+        {
+          "id": "stock_inv_4",
+          "stockName": "Hindustan Unilever",
+          "symbol": "HINDUNILVR",
+          "investmentType": "stock",
+          "brokerPlatform": "zerodha",
+          "quantity": 10,
+          "purchaseDate": "2023-07-05"
+        },
+        {
+          "id": "stock_inv_5",
+          "stockName": "Reliance Industries",
+          "symbol": "RELIANCE",
+          "investmentType": "stock",
+          "brokerPlatform": "groww",
+          "quantity": 12,
+          "purchaseDate": "2023-10-18"
+        },
+        {
+          "id": "stock_inv_6",
+          "stockName": "Adani Ports",
+          "symbol": "ADANIPORTS",
+          "investmentType": "stock",
+          "brokerPlatform": "upstox",
+          "quantity": 35,
+          "purchaseDate": "2024-01-12"
+        }
+      ],
+      "mutualFunds": [
+        {
+          "id": "mf_inv_1",
+          "fundName": "SBI Blue Chip Fund",
+          "symbol": "SBIBLUECHIP",
+          "investmentType": "mutualFund",
+          "brokerPlatform": "groww",
+          "units": 250,
+          "purchaseDate": "2023-04-05"
+        },
+        {
+          "id": "mf_inv_2",
+          "fundName": "Mirae Asset Emerging Bluechip Fund",
+          "symbol": "MAEBL",
+          "investmentType": "mutualFund",
+          "brokerPlatform": "kuvera",
+          "units": 180,
+          "purchaseDate": "2023-06-18"
+        },
+        {
+          "id": "mf_inv_3",
+          "fundName": "Parag Parikh Flexi Cap Fund",
+          "symbol": "PPFCF",
+          "investmentType": "mutualFund",
+          "brokerPlatform": "mfcentral",
+          "units": 120,
+          "purchaseDate": "2023-09-30"
+        },
+        {
+          "id": "mf_inv_4",
+          "fundName": "Axis Midcap Fund",
+          "symbol": "AXISMID",
+          "investmentType": "mutualFund",
+          "brokerPlatform": "groww",
+          "units": 150,
+          "purchaseDate": "2023-08-22"
+        },
+        {
+          "id": "mf_inv_5",
+          "fundName": "HDFC Small Cap Fund",
+          "symbol": "HDFCSMALL",
+          "investmentType": "mutualFund",
+          "brokerPlatform": "kuvera",
+          "units": 200,
+          "purchaseDate": "2023-12-15"
+        },
+        {
+          "id": "mf_inv_6",
+          "fundName": "ICICI Prudential Technology Fund",
+          "symbol": "ICICIPRUTECH",
+          "investmentType": "mutualFund",
+          "brokerPlatform": "mfcentral",
+          "units": 100,
+          "purchaseDate": "2024-02-08"
+        }
+      ],
+      "indexFunds": [
+        {
+          "id": "index_inv_1",
+          "fundName": "UTI Nifty Index Fund",
+          "symbol": "UTINIFTY",
+          "investmentType": "indexFund",
+          "brokerPlatform": "groww",
+          "units": 300,
+          "purchaseDate": "2023-03-12"
+        },
+        {
+          "id": "index_inv_2",
+          "fundName": "HDFC Index Fund - Sensex Plan",
+          "symbol": "HDFCSENSEX",
+          "investmentType": "indexFund",
+          "brokerPlatform": "zerodha",
+          "units": 180,
+          "purchaseDate": "2023-07-25"
+        },
+        {
+          "id": "index_inv_3",
+          "fundName": "SBI Nifty Index Fund",
+          "symbol": "SBINIFTY",
+          "investmentType": "indexFund",
+          "brokerPlatform": "kuvera",
+          "units": 250,
+          "purchaseDate": "2023-10-08"
+        },
+        {
+          "id": "index_inv_4",
+          "fundName": "Nippon India Index Fund - Nifty Plan",
+          "symbol": "NRIINDEX",
+          "investmentType": "indexFund",
+          "brokerPlatform": "mfcentral",
+          "units": 220,
+          "purchaseDate": "2023-12-04"
+        },
+        {
+          "id": "index_inv_5",
+          "fundName": "ICICI Prudential Nifty Next 50 Index Fund",
+          "symbol": "ICICINN50",
+          "investmentType": "indexFund",
+          "brokerPlatform": "groww",
+          "units": 150,
+          "purchaseDate": "2024-01-15"
+        }
+      ]
+    }
+  }
+} 
