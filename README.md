@@ -12,8 +12,6 @@ Key Features
 - Displays _all investments_ with execution links (e.g., "Buy more" button for funds).
 - Just like _PhonePe for bank balances_, but for stocks & mutual funds.
 
-2️⃣ Smart AI-Powered Comparison Tool
-
 - Uses _AI/ML_ to recommend _better performing_ funds & stocks.
 - Simple visual indicators like:
   - _Trust Score_ (⭐ ratings like Uber drivers)
