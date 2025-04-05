@@ -5,6 +5,7 @@ import AllInvestmentsView from '../components/dashboard/AllInvestmentsView';
 import PortfolioPerformance from '../components/dashboard/PortfolioPerformance';
 import AddInvestmentForm from '../components/dashboard/AddInvestmentForm';
 import PortfolioRecommendations from '../components/dashboard/PortfolioRecommendations';
+import AssetAllocation from '../components/dashboard/AssetAllocation';
 
 const Dashboard = () => {
   return (
@@ -14,6 +15,8 @@ const Dashboard = () => {
       </div>
 
       <PortfolioPerformance />
+      
+      
       
       <div className="dashboard-component glass-effect rounded-xl p-4">
         <AllInvestmentsView />
