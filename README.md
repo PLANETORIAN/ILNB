@@ -9,7 +9,7 @@ Key Features
 
 1. Automatic Portfolio Tracking
 
-Fetches data from MF Central API and broker APIs
+Fetches data from MF Central API and broker APIs.
 
 Displays all investments with execution links (e.g., "Buy more" button for funds)
 
