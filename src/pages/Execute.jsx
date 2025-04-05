@@ -15,7 +15,7 @@ const Tooltip = ({ children, content }) => {
     <div className="relative inline-flex items-center group">
       {children}
       <button 
-        className="ml-1.5 inline-flex items-center justify-center"
+        className="ml-1.5 inline-flex items-center justify-center bg-gray-300 dark:bg-gray-600 rounded-full p-0.5"
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onClick={(e) => {
@@ -23,7 +23,7 @@ const Tooltip = ({ children, content }) => {
           setIsVisible(!isVisible);
         }}
       >
-        <Info className="w-3.5 h-3.5 text-gray-400 hover:text-purple-400 transition-colors" />
+        <Info className="w-3.5 h-3.5 text-gray-600 dark:text-gray-300 hover:text-purple-400 transition-colors" />
       </button>
       
       {isVisible && (
@@ -497,14 +497,14 @@ function Execute() {
         <div className="mt-4 flex space-x-2">
           <button 
             onClick={(e) => handleCompare(asset, e)}
-            className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 transition-colors text-sm font-medium"
+            className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 transition-colors text-sm font-medium text-black"
           >
             <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
             Compare
           </button>
           <button 
             onClick={(e) => handleInvestNow(asset, e)}
-            className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 transition-colors text-sm font-medium"
+            className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 transition-colors text-sm font-medium text-black"
           >
             <DollarSign className="w-3.5 h-3.5 mr-1.5" />
             Invest Now
@@ -558,7 +558,7 @@ function Execute() {
               <div className="relative" ref={dropdownRef}>
                 <button 
                   onClick={() => setShowDropdown(!showDropdown)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-black"
                 >
                   <span>Filter</span>
                   <ChevronDown className="w-4 h-4" />
@@ -567,13 +567,13 @@ function Execute() {
                 {showDropdown && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
                     <div className="p-2">
-                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer" onClick={() => setShowDropdown(false)}>
+                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
                         All Assets
                       </div>
-                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer" onClick={() => setShowDropdown(false)}>
+                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
                         Mutual Funds
                       </div>
-                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer" onClick={() => setShowDropdown(false)}>
+                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
                         Stocks
                       </div>
                     </div>
@@ -616,31 +616,26 @@ function Execute() {
                     </Tooltip>
                   </div>
                   <div className={`relative flex rounded-lg overflow-hidden border-2 ${isDarkMode ? 'border-gray-600/30' : 'border-gray-300'} h-12`}>
-                    {/* Background highlight that slides */}
-                    <div 
-                      className={`absolute top-0 bottom-0 w-1/2 transition-all duration-300 ease-out ${
-                        transactionType === 'buy' 
-                          ? 'left-0 bg-gradient-to-r from-green-600 to-green-500 rounded-r-sm' 
-                          : 'left-1/2 bg-gradient-to-r from-red-500 to-red-600 rounded-l-sm'
-                      } ${!isDarkMode ? 'opacity-70' : ''}`}
-                    ></div>
-                    
-                    {/* Toggle buttons */}
+                    {/* Toggle buttons without sliding background */}
                     <button
                       onClick={() => handleTransactionTypeChange('buy')}
-                      className="flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10"
+                      className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 mr-2 ${
+                        transactionType === 'buy' ? 'bg-green-500/30' : ''
+                      }`}
                       type="button"
                     >
-                      <span className={`flex items-center justify-center ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <span className="flex items-center justify-center text-black">
                         Buy
                       </span>
                     </button>
                     <button
                       onClick={() => handleTransactionTypeChange('sell')}
-                      className="flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10"
+                      className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 ml-2 ${
+                        transactionType === 'sell' ? 'bg-red-500/30' : ''
+                      }`}
                       type="button"
                     >
-                      <span className={`flex items-center justify-center ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <span className="flex items-center justify-center text-black">
                         Sell
                       </span>
                     </button>
@@ -656,31 +651,26 @@ function Execute() {
                       </Tooltip>
                     </div>
                     <div className={`relative flex rounded-lg overflow-hidden border-2 ${isDarkMode ? 'border-gray-600/30' : 'border-gray-300'} h-12`}>
-                      {/* Background highlight that slides */}
-                      <div 
-                        className={`absolute top-0 bottom-0 w-1/2 transition-all duration-300 ease-out ${
-                          installmentType === 'oneTime' 
-                            ? 'left-0 bg-gradient-to-r from-blue-600 to-blue-500 rounded-r-sm' 
-                            : 'left-1/2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-l-sm'
-                        } ${!isDarkMode ? 'opacity-70' : ''}`}
-                      ></div>
-                      
-                      {/* Toggle buttons */}
+                      {/* Toggle buttons without sliding background */}
                       <button
                         onClick={() => handleInstallmentTypeChange('oneTime')}
-                        className="flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10"
+                        className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 mr-2 ${
+                          installmentType === 'oneTime' ? 'bg-blue-500/30' : ''
+                        }`}
                         type="button"
                       >
-                        <span className={`flex items-center justify-center ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <span className="flex items-center justify-center text-black">
                           One-time
                         </span>
                       </button>
                       <button
                         onClick={() => handleInstallmentTypeChange('sip')}
-                        className="flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10"
+                        className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 ml-2 ${
+                          installmentType === 'sip' ? 'bg-blue-500/30' : ''
+                        }`}
                         type="button"
                       >
-                        <span className={`flex items-center justify-center ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <span className="flex items-center justify-center text-black">
                           SIP
                         </span>
                       </button>
@@ -800,11 +790,11 @@ function Execute() {
                           Processing...
                         </div>
                       ) : (
-                        <>
+                        <span className="text-white">
                           {transactionType === 'buy' ? 'Buy' : 'Sell'} 
                           {selectedAsset.type === 'stock' ? ` ${amount || ''} Shares` : ` ₹${amount || '0'}`}
                           {installmentType === 'sip' ? ' Monthly SIP' : ''}
-                        </>
+                        </span>
                       )}
                     </button>
                     

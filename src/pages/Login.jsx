@@ -1,14 +1,21 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import Spline from '@splinetool/react-spline';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [splineError, setSplineError] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const onSplineError = (e) => {
+    console.error("Spline loading error:", e);
+    setSplineError(true);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,8 +56,19 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="glass-effect p-8 w-full max-w-md animate-fade-in">
+    <div className="min-h-screen relative flex items-center justify-center px-4">
+      {/* Spline Animation Container */}
+      <div className="absolute inset-0 z-0">
+        {!splineError && (
+          <Spline 
+            scene="https://prod.spline.design/6QqI5NemvdHbYKDH/scene.splinecode"
+            onError={onSplineError}
+          />
+        )}
+      </div>
+
+      {/* Login Form Container */}
+      <div className="glass-effect p-8 w-full max-w-md animate-fade-in z-10 relative backdrop-blur-lg">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-2xl mx-auto mb-4 animate-float" />
           <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
@@ -66,24 +84,24 @@ function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium mb-2">Email</label>
+            <label className="block text-sm font-medium mb-2 text-white">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all placeholder-white text-white"
               placeholder="Enter your email"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Password</label>
+            <label className="block text-sm font-medium mb-2 text-white">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all placeholder-white text-white"
               placeholder="Enter your password"
               required
             />

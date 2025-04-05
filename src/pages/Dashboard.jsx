@@ -6,6 +6,7 @@ import QuickActions from '../components/dashboard/QuickActions';
 import PerformanceMetrics from '../components/dashboard/PerformanceMetrics';
 import InvestmentComparison from '../components/dashboard/InvestmentComparison';
 import AllInvestmentsView from '../components/dashboard/AllInvestmentsView';
+import AssetChartGrid from '../components/dashboard/AssetChartGrid';
 
 const Dashboard = () => {
   return (
@@ -13,6 +14,10 @@ const Dashboard = () => {
       <div className="dashboard-component glass-effect rounded-xl p-4">
         <h2 className="text-xl font-semibold mb-4">Portfolio Summary</h2>
         <PortfolioSummary />
+      </div>
+
+      <div className="dashboard-component glass-effect rounded-xl p-4">
+        <AssetChartGrid />
       </div>
 
       <div className="dashboard-component glass-effect rounded-xl p-4">
