@@ -1,52 +1,56 @@
-# React + Vite
+# BINARY BANDITS
 
 Smart Investment Tracker  
 
-Overview  
-Smart Investment Tracker is a unified financial management app that allows users to track, compare, and invest in mutual funds (MFs) and stocks from multiple platforms—all in one place. With AI-driven insights, a user-friendly interface, and one-click execution, this app simplifies investment decisions for both beginners and experienced investors.  
+Overview
+Smart Investment Tracker is a unified financial management app that allows users to track, compare, and invest in mutual funds (MFs) and stocks from multiple platforms—all in one place. With AI-driven insights, a user-friendly interface, and one-click execution, this app simplifies investment decisions for both beginners and experienced investors.
 
-Key Features  
-1️⃣ Automatic Portfolio Tracking  
-- Fetches data from *MF Central API, broker APIs*  
-- Displays *all investments* with execution links (e.g., "Buy more" button for funds).  
-- Just like *PhonePe for bank balances*, but for stocks & mutual funds.  
+Key Features
 
-2️⃣ Smart AI-Powered Comparison Tool  
-- Uses *AI/ML* to recommend *better performing* funds & stocks.  
-- Simple visual indicators like:  
-  - *Trust Score* (⭐ ratings like Uber drivers)  
-  - *Risk Meter* (🟢 Low | 🟠 Medium | 🔴 High)  
-  - *Projected Returns* ("₹10,000 → ₹12,000 in 1 year" 📈)  
-- Example: “Fund A is better than Fund B: 15% returns, same risk. Switch now? ✅”  
+1. Automatic Portfolio Tracking
 
-3️⃣ One Dashboard for Tracking + Execution  
-- See all *MFs + stocks* in a *single interactive dashboard*.  
-- One-click execution: "Invest Now" button (like Amazon’s *"Buy Now"*).  
-- No need to log in separately to MF Central or broker platforms.  
+Fetches data from MF Central API and broker APIs
 
-4️⃣ Super Simple & Interactive UI   
-- Uses *icons & plain-English summaries* for easy understanding.  
-- *One-click actions*:  
-  - Compare funds (like Amazon product comparison)  
-  - Quick Invest (like Uber’s "Book Ride")  
+Displays all investments with execution links (e.g., "Buy more" button for funds)
 
+Works like PhonePe for bank balances, but for stocks and mutual funds
 
-Real-Life Example  
-Imagine your father uses this app to:  
-1. *See all investments: *"Zerodha: ₹50K in stocks | MF Central: ₹1L in MFs."  
-2. *Compare Funds: AI suggests switching to a **higher-return* fund.  
-3. *Execute Instantly: Click *"Invest Now" to buy Fund B *without logging in elsewhere*.  
+2. Smart AI-Powered Comparison and Recommendation Tool
 
-Tech Stack  
-- *Frontend*: React.js  
-- *Backend*: Node.js 
-- *Database*: Firestore Database 
-- *APIs*: MFU API, Broker APIs 
-- *AI/ML*: Python (scikit-learn, TensorFlow)  
+Uses AI/ML to recommend better-performing funds and stocks
 
-## 📜 License  
-MIT License  
+Provides simple visual indicators such as:
 
----
+Trust Score (star ratings similar to ride-sharing apps)
 
-💡 *Built with love for investors!* 💙🚀
+Risk Meter (Low, Medium, High)
+
+Projected Returns (e.g., "10,000 to 12,000 in 1 year")
+
+Example: “Fund A is better than Fund B: 15 percent returns with same risk. Switch now?”
+
+Also suggests similar or better-performing alternatives based on portfolio analysis
+
+3. One Dashboard for Tracking and Execution
+
+View all mutual funds and stocks in a single interactive dashboard
+
+One-click execution through "Invest Now" button
+
+Eliminates the need to log in separately to MF Central or broker platforms
+
+4. Simple and Interactive User Interface
+
+Clear, plain-English summaries for easy understanding
+
+One-click actions for comparing funds and executing investments
+
+Fund and stock comparisons function similar to product comparisons in e-commerce apps
+
+Includes real-time updates, filters, and sorting for better analysis
+
+5. Integrated Payment Gateway
+
+Seamless and secure transactions through integrated payment providers
+
+Users can invest, switch, or redeem without navigating to external portals
