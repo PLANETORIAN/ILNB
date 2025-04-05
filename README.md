@@ -1,9 +1,9 @@
 # BINARY BANDITS
 
-Smart Investment Tracker  
+InvestHub  
 
 Overview
-Smart Investment Tracker is a unified financial management app that allows users to track, compare, and invest in mutual funds (MFs) and stocks from multiple platforms—all in one place. With AI-driven insights, a user-friendly interface, and one-click execution, this app simplifies investment decisions for both beginners and experienced investors.
+InvestHub is a unified financial management app that allows users to track, compare, and invest in mutual funds (MFs) and stocks from multiple platforms—all in one place. With AI-driven insights, a user-friendly interface, and one-click execution, this app simplifies investment decisions for both beginners and experienced investors.
 
 Key Features
 
