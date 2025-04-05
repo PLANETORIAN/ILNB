@@ -1,8 +1,11 @@
 import axios from 'axios';
 
-// Base API configuration
+// Configure base API URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// Create axios instance
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api', // Replace with your actual API URL
+  baseURL: API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -36,8 +39,23 @@ api.interceptors.response.use(
   }
 );
 
+// Payment API endpoints
+const payments = {
+  verifyPayment: (paymentData) => api.post('/verify-payment', paymentData),
+};
+
+// Transactions API endpoints
+const transactions = {
+  create: (transactionData) => api.post('/transactions', transactionData),
+  getById: (id) => api.get(`/transactions/${id}`),
+  getAll: (params) => api.get('/transactions', { params }),
+};
+
 // Export API methods
 export default {
+  payments,
+  transactions,
+  
   // Auth endpoints
   auth: {
     login: (credentials) => api.post('/auth/login', credentials),
@@ -98,17 +116,6 @@ export default {
     sell: (orderData) => api.post('/crypto/sell', orderData),
     getTopAssets: (limit = 10) => api.get(`/crypto/top?limit=${limit}`),
     getHistory: (symbol, period = '1y') => api.get(`/crypto/${symbol}/history?period=${period}`),
-  },
-  
-  // Transaction endpoints
-  transactions: {
-    execute: (data) => api.post('/transactions/execute', data),
-    getHistory: () => api.get('/transactions/history'),
-    quickExecute: (data) => api.post('/transactions/quick-execute', data),
-    quickSell: (data) => api.post('/transactions/quick-sell', data),
-    cancel: (transactionId) => api.post(`/transactions/${transactionId}/cancel`),
-    getStatus: (transactionId) => api.get(`/transactions/${transactionId}/status`),
-    getReceipt: (transactionId) => api.get(`/transactions/${transactionId}/receipt`),
   },
   
   // Unified Trading API
