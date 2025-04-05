@@ -5,6 +5,7 @@ import Card from '@/components/common/Card';
 import { ArrowUp, ArrowDown, Sparkles, ChevronDown, ExternalLink, Check, Zap, ArrowUpDown, HelpCircle, BarChart3, DollarSign, Info } from 'lucide-react';
 // Import API service when ready to implement real API calls
 // import api from '@/services/api';
+import razorpayService from '@/services/razorpay';
 
 // Tooltip component for financial terms
 const Tooltip = ({ children, content }) => {
@@ -242,35 +243,83 @@ function Execute() {
     }
     console.log(`Would call API endpoint: ${apiEndpoint}`);
     
-    // For demo purposes, we'll simulate the API call
-    setTimeout(() => {
-      console.log('Transaction data:', transactionData);
-      setIsProcessing(false);
-      setIsSuccess(true);
+    // Only initiate payment for buy transactions
+    if (transactionType === 'buy') {
+      // Convert amount to paise (smallest currency unit for INR)
+      const amountInPaise = Math.round(parseFloat(amount) * 100);
       
-      // Reset after showing success message
+      // Razorpay payment options
+      const options = {
+        amount: amountInPaise,
+        currency: 'INR',
+        name: 'ABCD Finance',
+        description: `${selectedAsset.type === 'mf' ? 'Mutual Fund' : 'Stock'} Investment`,
+        notes: {
+          assetId: selectedAsset.id.toString(),
+          assetName: selectedAsset.name,
+          assetType: selectedAsset.type,
+          transactionType,
+          installmentType
+        },
+        prefill: {
+          name: 'Investor Name',
+          email: 'investor@example.com',
+          contact: '9876543210'
+        },
+        handler: function(response) {
+          console.log('Payment successful:', response);
+          // Here you would typically make an API call to your backend to verify payment
+          // and complete the transaction
+          
+          // For demo, we'll simulate success
+          setIsProcessing(false);
+          setIsSuccess(true);
+          
+          // Reset after showing success message
+          setTimeout(() => {
+            setIsSuccess(false);
+            setAmount('');
+            // Optionally navigate back to dashboard
+            // navigate('/');
+          }, 3000);
+        },
+        modal: {
+          ondismiss: function() {
+            console.log('Payment modal dismissed');
+            setIsProcessing(false);
+            alert('Payment cancelled');
+          },
+          escape: true,
+          backdropclose: false
+        }
+      };
+      
+      // Initiate Razorpay payment
+      razorpayService.initiatePayment(options)
+        .then(response => {
+          console.log('Payment response:', response);
+          // Handler function above will handle success
+        })
+        .catch(error => {
+          console.error('Payment error:', error);
+          setIsProcessing(false);
+          alert(`Payment failed: ${error.message || 'Unknown error'}`);
+        });
+    } else {
+      // For sell transactions, no payment is needed
+      // For demo purposes, we'll simulate the API call
       setTimeout(() => {
-        setIsSuccess(false);
-        setAmount('');
-        // Optionally navigate back to dashboard
-        // navigate('/');
-      }, 3000);
-    }, 1500);
-    
-    // In a real implementation, you would use:
-    // apiCall
-    //   .then(response => {
-    //     setIsProcessing(false);
-    //     setIsSuccess(true);
-    //     setTimeout(() => {
-    //       setIsSuccess(false);
-    //       setAmount('');
-    //     }, 3000);
-    //   })
-    //   .catch(error => {
-    //     setIsProcessing(false);
-    //     // Handle error state
-    //   });
+        console.log('Transaction data:', transactionData);
+        setIsProcessing(false);
+        setIsSuccess(true);
+        
+        // Reset after showing success message
+        setTimeout(() => {
+          setIsSuccess(false);
+          setAmount('');
+        }, 3000);
+      }, 1500);
+    }
   };
 
   // Handle quick buy - one-click purchase 
@@ -279,11 +328,9 @@ function Execute() {
     
     // Set default amount based on minimum investment for mutual funds
     // or 1 unit for stocks
-    if (selectedAsset.type === 'mf') {
-      setAmount(selectedAsset.minInvestment.toString());
-    } else {
-      setAmount('1');
-    }
+    const quickBuyAmount = selectedAsset.type === 'mf' 
+      ? selectedAsset.minInvestment 
+      : selectedAsset.price;
     
     // Set transaction type to buy
     setTransactionType('buy');
@@ -292,7 +339,7 @@ function Execute() {
     const quickTransactionData = {
       assetId: selectedAsset.id,
       assetType: selectedAsset.type,
-      amount: selectedAsset.type === 'mf' ? selectedAsset.minInvestment : selectedAsset.price,
+      amount: quickBuyAmount,
       transactionType: 'buy',
       installmentType: 'oneTime',
       isQuickBuy: true,
@@ -302,31 +349,64 @@ function Execute() {
     // Execute quick transaction
     setIsProcessing(true);
     
-    // Call the quick execute API
-    setTimeout(() => {
-      console.log('Quick transaction data:', quickTransactionData);
-      setIsProcessing(false);
-      setIsSuccess(true);
-      
-      // Reset after showing success message
-      setTimeout(() => {
-        setIsSuccess(false);
-      }, 3000);
-    }, 1000);
+    // Convert amount to paise (smallest currency unit for INR)
+    const amountInPaise = Math.round(quickBuyAmount * 100);
     
-    // In a real implementation, you would use:
-    // api.transactions.quickExecute(quickTransactionData)
-    //   .then(response => {
-    //     setIsProcessing(false);
-    //     setIsSuccess(true);
-    //     setTimeout(() => {
-    //       setIsSuccess(false);
-    //     }, 3000);
-    //   })
-    //   .catch(error => {
-    //     setIsProcessing(false);
-    //     // Handle error state
-    //   });
+    // Razorpay payment options for quick buy
+    const options = {
+      amount: amountInPaise,
+      currency: 'INR',
+      name: 'ABCD Finance',
+      description: `Quick ${selectedAsset.type === 'mf' ? 'Investment' : 'Stock Purchase'}`,
+      notes: {
+        assetId: selectedAsset.id.toString(),
+        assetName: selectedAsset.name,
+        assetType: selectedAsset.type,
+        transactionType: 'buy',
+        installmentType: 'oneTime',
+        isQuickBuy: 'true'
+      },
+      prefill: {
+        name: 'Investor Name',
+        email: 'investor@example.com',
+        contact: '9876543210'
+      },
+      handler: function(response) {
+        console.log('Quick buy payment successful:', response);
+        // Here you would typically make an API call to your backend to verify payment
+        // and complete the transaction
+        
+        // For demo, we'll simulate success
+        setIsProcessing(false);
+        setIsSuccess(true);
+        
+        // Reset after showing success message
+        setTimeout(() => {
+          setIsSuccess(false);
+        }, 3000);
+      },
+      modal: {
+        ondismiss: function() {
+          console.log('Payment modal dismissed');
+          setIsProcessing(false);
+          alert('Quick buy payment cancelled');
+        },
+        escape: true,
+        backdropclose: false
+      }
+    };
+    
+    // Initiate Razorpay payment for quick buy
+    razorpayService.initiatePayment(options)
+      .then(response => {
+        console.log('Quick buy payment response:', response);
+        // Handler function above will handle success
+      })
+      .catch(error => {
+        console.error('Quick buy payment error:', error);
+        setIsProcessing(false);
+        alert(`Quick buy payment failed: ${error.message || 'Unknown error'}`);
+      });
   };
 
   // Handle transaction type change
