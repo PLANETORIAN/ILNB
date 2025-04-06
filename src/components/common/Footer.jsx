@@ -53,7 +53,7 @@ function Footer() {
                 </div>
               </div>
               <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-                Portfolio Pro
+                InvestHub
               </span>
             </div>
             <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>
@@ -123,7 +123,7 @@ function Footer() {
         <div className={`mt-8 pt-8 border-t ${isDarkMode ? 'border-white/10' : 'border-purple-200'}`}>
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>
-              © {currentYear} Portfolio Pro. All rights reserved.
+              © {currentYear} InvestHub. All rights reserved.
             </p>
             <div className="flex space-x-6">
               {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (
