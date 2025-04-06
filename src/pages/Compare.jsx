@@ -301,7 +301,7 @@ function Compare() {
           priceHistory: response.data.data.map(item => ({
             date: new Date(item.Date).toLocaleDateString(),
             price: item.Close
-          })).reverse()
+          }))
         });
       } catch (err) {
         console.error('Error fetching market index:', err);
@@ -317,7 +317,7 @@ function Compare() {
             priceHistory: response.data.data.map(item => ({
               date: new Date(item.Date).toLocaleDateString(),
               price: item.Close
-            })).reverse()
+            }))
           });
         } catch (err2) {
           console.error('Error fetching fallback market index:', err2);
@@ -422,7 +422,7 @@ function Compare() {
         const updatedStockData = stockData.map(stock => {
           try {
             // Extract raw price values from price history
-            const stockPrices = stock.priceHistory.map(item => item.price).reverse();
+            const stockPrices = stock.priceHistory.map(item => item.price);
             const beta = calculateBeta(stockPrices, marketIndex.prices);
             const alpha = calculateAlpha(stockPrices, marketIndex.prices);
             
@@ -525,7 +525,7 @@ function Compare() {
           priceHistory: response.data.data.map(item => ({
             date: new Date(item.Date).toLocaleDateString(),
             price: item.Close
-          })).reverse()
+          }))
         };
         
         // Calculate initial trust score
@@ -599,7 +599,7 @@ function Compare() {
             priceHistory: response.data.data.map(item => ({
               date: new Date(item.Date).toLocaleDateString(),
               price: item.Close
-            })).reverse()
+            }))
           };
           
           // Calculate trust score for US stock
