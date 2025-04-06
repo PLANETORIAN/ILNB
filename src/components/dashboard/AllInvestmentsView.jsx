@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Card from '../common/Card';
 import { useUserInvestments } from '../../context/UserInvestmentsContext';
 import { ChevronDown } from 'lucide-react';
+import axios from 'axios';
 
 const AllInvestmentsView = () => {
   const { userInvestments, isLoading: contextLoading } = useUserInvestments();
@@ -12,7 +13,7 @@ const AllInvestmentsView = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const processInvestmentsData = () => {
+    const processInvestmentsData = async () => {
       if (!userInvestments || !userInvestments.userData || !userInvestments.userData.investments) {
         setIsLoading(false);
         return;
@@ -21,41 +22,129 @@ const AllInvestmentsView = () => {
       const { stocks = [], mutualFunds = [], indexFunds = [] } = userInvestments.userData.investments;
 
       // Transform to a unified format for display
-      const allInvestments = [
-        ...stocks.map(stock => ({
-          id: stock.id,
-          name: stock.stockName,
-          symbol: stock.symbol,
-          type: 'stock',
-          platform: stock.brokerPlatform,
-          quantity: stock.quantity,
-          value: (Math.random() * 15000 + 5000).toFixed(0), // Mock value for demo
-          purchaseDate: stock.purchaseDate,
-          returns: (Math.random() * 25 - 5).toFixed(1) // Mock returns for demo
-        })),
-        ...mutualFunds.map(fund => ({
+      const allInvestments = [];
+
+      // Process stocks with real API data
+      for (const stock of stocks) {
+        try {
+          // Get current price
+          const response = await axios.get(`https://stock-server-j29j.onrender.com/stock/${stock.symbol}.NS`);
+          const currentPrice = response.data.live_price;
+
+          // Get historical price data to find purchase price
+          const historicalResponse = await axios.get(`https://stock-server-j29j.onrender.com/stock/${stock.symbol}.NS`);
+          const purchaseDate = new Date(stock.purchaseDate);
+          
+          // Find the closest historical price to purchase date
+          const historicalData = historicalResponse.data.data;
+          let purchasePrice = currentPrice; // default to current price if no historical data found
+          
+          if (historicalData && historicalData.length > 0) {
+            const closestPriceData = historicalData.reduce((closest, current) => {
+              const currentDate = new Date(current.Date);
+              const closestDate = new Date(closest.Date);
+              const purchaseTimeDiff = Math.abs(purchaseDate - currentDate);
+              const closestTimeDiff = Math.abs(purchaseDate - closestDate);
+              return purchaseTimeDiff < closestTimeDiff ? current : closest;
+            });
+            purchasePrice = closestPriceData.Close;
+          }
+
+          const value = currentPrice * stock.quantity;
+          const investedAmount = purchasePrice * stock.quantity;
+          const returns = ((value - investedAmount) / investedAmount * 100).toFixed(1);
+
+          console.log(`Stock ${stock.symbol} - Current: ${currentPrice}, Purchase: ${purchasePrice}, Returns: ${returns}%`);
+
+          allInvestments.push({
+            id: stock.id,
+            name: stock.stockName,
+            symbol: stock.symbol,
+            type: 'stock',
+            platform: stock.brokerPlatform,
+            quantity: stock.quantity,
+            value: value.toFixed(0),
+            purchaseDate: stock.purchaseDate,
+            returns: returns,
+            currentPrice,
+            purchasePrice,
+            investedAmount: investedAmount.toFixed(0)
+          });
+        } catch (error) {
+          console.error(`Error fetching price for ${stock.symbol}:`, error);
+          // Use fallback values if API fails
+          const fallbackCurrentPrice = 1000;
+          const fallbackPurchasePrice = 900; // Assume a lower purchase price for demonstration
+          const fallbackValue = fallbackCurrentPrice * stock.quantity;
+          const fallbackInvestedAmount = fallbackPurchasePrice * stock.quantity;
+          const fallbackReturns = ((fallbackValue - fallbackInvestedAmount) / fallbackInvestedAmount * 100).toFixed(1);
+
+          allInvestments.push({
+            id: stock.id,
+            name: stock.stockName,
+            symbol: stock.symbol,
+            type: 'stock',
+            platform: stock.brokerPlatform,
+            quantity: stock.quantity,
+            value: fallbackValue.toFixed(0),
+            purchaseDate: stock.purchaseDate,
+            returns: fallbackReturns,
+            currentPrice: fallbackCurrentPrice,
+            purchasePrice: fallbackPurchasePrice,
+            investedAmount: fallbackInvestedAmount.toFixed(0)
+          });
+        }
+      }
+
+      // Process mutual funds
+      mutualFunds.forEach(fund => {
+        // For mutual funds, use historical NAV data
+        const currentNav = fund.currentNav || 120;
+        const purchaseNav = 100; // This should ideally come from historical NAV data
+        const value = currentNav * fund.units;
+        const investedAmount = purchaseNav * fund.units;
+        const returns = ((value - investedAmount) / investedAmount * 100).toFixed(1);
+
+        allInvestments.push({
           id: fund.id,
           name: fund.fundName,
           symbol: fund.symbol,
           type: 'mutual_fund',
           platform: fund.brokerPlatform,
           quantity: fund.units,
-          value: (Math.random() * 20000 + 3000).toFixed(0), // Mock value for demo
+          value: value.toFixed(0),
           purchaseDate: fund.purchaseDate,
-          returns: (Math.random() * 20 + 2).toFixed(1) // Mock returns for demo
-        })),
-        ...indexFunds.map(fund => ({
+          returns: returns,
+          currentNav,
+          purchaseNav,
+          investedAmount: investedAmount.toFixed(0)
+        });
+      });
+
+      // Process index funds
+      indexFunds.forEach(fund => {
+        // For index funds, use historical NAV data
+        const currentNav = fund.currentNav || 180;
+        const purchaseNav = 150; // This should ideally come from historical NAV data
+        const value = currentNav * fund.units;
+        const investedAmount = purchaseNav * fund.units;
+        const returns = ((value - investedAmount) / investedAmount * 100).toFixed(1);
+
+        allInvestments.push({
           id: fund.id,
           name: fund.fundName,
           symbol: fund.symbol,
           type: 'index_fund',
           platform: fund.brokerPlatform,
           quantity: fund.units,
-          value: (Math.random() * 10000 + 3000).toFixed(0), // Mock value for demo
+          value: value.toFixed(0),
           purchaseDate: fund.purchaseDate,
-          returns: (Math.random() * 15 + 5).toFixed(1) // Mock returns for demo
-        }))
-      ];
+          returns: returns,
+          currentNav,
+          purchaseNav,
+          investedAmount: investedAmount.toFixed(0)
+        });
+      });
 
       // Calculate platform summaries
       const platformMap = {};
@@ -65,56 +154,57 @@ const AllInvestmentsView = () => {
             id: inv.platform,
             name: getPlatformDisplayName(inv.platform),
             totalValue: 0,
+            totalInvested: 0,
             investments: [],
             returns: 0
           };
         }
         platformMap[inv.platform].investments.push(inv);
         platformMap[inv.platform].totalValue += Number(inv.value);
+        platformMap[inv.platform].totalInvested += Number(inv.investedAmount);
       });
 
-      // Calculate average returns for each platform
+      // Calculate returns for each platform based on total value and total invested amount
       Object.values(platformMap).forEach(platform => {
-        if (platform.investments.length > 0) {
-          const totalReturns = platform.investments.reduce((sum, inv) => sum + Number(inv.returns), 0);
-          platform.returns = (totalReturns / platform.investments.length).toFixed(1);
+        if (platform.totalInvested > 0) {
+          platform.returns = ((platform.totalValue - platform.totalInvested) / platform.totalInvested * 100).toFixed(1);
         }
       });
 
       // Calculate type summaries
       const typeMap = {
-        stock: { id: 'stock', name: 'Stocks', totalValue: 0, returns: 0, count: 0 },
-        mutual_fund: { id: 'mutual_fund', name: 'Mutual Funds', totalValue: 0, returns: 0, count: 0 },
-        index_fund: { id: 'index_fund', name: 'Index Funds', totalValue: 0, returns: 0, count: 0 },
-        etf: { id: 'etf', name: 'ETFs', totalValue: 0, returns: 0, count: 0 }
+        stock: { id: 'stock', name: 'Stocks', totalValue: 0, totalInvested: 0, count: 0 },
+        mutual_fund: { id: 'mutual_fund', name: 'Mutual Funds', totalValue: 0, totalInvested: 0, count: 0 },
+        index_fund: { id: 'index_fund', name: 'Index Funds', totalValue: 0, totalInvested: 0, count: 0 },
+        etf: { id: 'etf', name: 'ETFs', totalValue: 0, totalInvested: 0, count: 0 }
       };
 
       allInvestments.forEach(inv => {
         if (typeMap[inv.type]) {
           typeMap[inv.type].totalValue += Number(inv.value);
-          typeMap[inv.type].returns += Number(inv.returns);
+          typeMap[inv.type].totalInvested += Number(inv.investedAmount);
           typeMap[inv.type].count++;
         }
       });
 
-      // Calculate average returns for each type
+      // Calculate returns for each type based on total value and total invested amount
       Object.values(typeMap).forEach(type => {
-        if (type.count > 0) {
-          type.returns = (type.returns / type.count).toFixed(1);
+        if (type.totalInvested > 0) {
+          type.returns = ((type.totalValue - type.totalInvested) / type.totalInvested * 100).toFixed(1);
         }
       });
 
       // Calculate total portfolio value and returns
       const totalValue = allInvestments.reduce((sum, inv) => sum + Number(inv.value), 0);
-      const totalReturns = allInvestments.length > 0
-        ? (allInvestments.reduce((sum, inv) => sum + Number(inv.returns), 0) / allInvestments.length).toFixed(1)
-        : 0;
+      const totalInvested = allInvestments.reduce((sum, inv) => sum + Number(inv.investedAmount), 0);
+      const totalReturns = totalInvested > 0 ? ((totalValue - totalInvested) / totalInvested * 100).toFixed(1) : '0.0';
 
       setProcessedData({
         platforms: Object.values(platformMap),
         investments: allInvestments,
         types: Object.values(typeMap).filter(type => type.count > 0),
         totalValue,
+        totalInvested,
         totalReturns
       });
 
