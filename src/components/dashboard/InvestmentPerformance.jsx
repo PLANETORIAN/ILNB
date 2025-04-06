@@ -27,15 +27,18 @@ const getInvestmentColor = (type) => {
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-gray-800 p-3 rounded-md border border-gray-700 text-sm">
-        <p className="font-medium mb-2">{label}</p>
+      <div className="bg-white dark:bg-gray-800 p-3 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 text-sm transition-all duration-150 transform scale-105">
+        <p className="font-medium text-black dark:text-white mb-2">{label}</p>
         {payload.map((entry, index) => (
-          <p key={`item-${index}`} style={{ color: entry.color }} className="flex items-center justify-between">
-            <span className="mr-3">{entry.name}: </span>
-            <span className={entry.value >= 0 ? 'text-green-400' : 'text-red-400'}>
+          <div key={`item-${index}`} className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: entry.color }}></div>
+              <span className="text-black dark:text-white mr-3">{entry.name}: </span>
+            </div>
+            <span className={entry.value >= 0 ? 'text-green-500' : 'text-red-500'}>
               {entry.value >= 0 ? '+' : ''}{entry.value.toFixed(2)}%
             </span>
-          </p>
+          </div>
         ))}
       </div>
     );

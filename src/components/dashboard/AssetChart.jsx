@@ -35,12 +35,15 @@ const AssetChart = ({ asset, chartType = 'line' }) => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-gray-800 p-2 rounded-md border border-gray-700 text-sm">
-          <p className="font-medium">{label}</p>
-          <p className="text-cyan-400">
-            {asset.type === 'mutualFund' ? 'NAV: ' : 'Price: '}
-            ₹{payload[0].value.toFixed(2)}
-          </p>
+        <div className="bg-white dark:bg-gray-800 p-3 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 text-sm transition-all duration-150 transform scale-105">
+          <p className="font-medium text-black dark:text-white mb-1">{label}</p>
+          <div className="flex items-center">
+            <div className="w-2 h-2 rounded-full bg-cyan-400 mr-2"></div>
+            <p className="text-black dark:text-cyan-400 font-medium">
+              {asset.type === 'mutualFund' ? 'NAV: ' : 'Price: '}
+              ₹{payload[0].value.toFixed(2)}
+            </p>
+          </div>
         </div>
       );
     }

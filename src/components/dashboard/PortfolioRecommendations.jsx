@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useUserInvestments } from '../../context/UserInvestmentsContext';
-import { TrendingUp, AlertTriangle, Info, Shield, ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { TrendingUp, AlertTriangle, Info, Shield, ChevronDown, ChevronUp, Star, Check, AlertCircle } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
 
 const PortfolioRecommendations = () => {
-  const { userInvestments } = useUserInvestments();
+  const { userInvestments, setUserInvestments } = useUserInvestments();
   const [stockRecommendations, setStockRecommendations] = useState([]);
   const [analysis, setAnalysis] = useState({});
   const [isAnalysisOpen, setIsAnalysisOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [notification, setNotification] = useState(null);
+  const [addingStock, setAddingStock] = useState(null);
 
   // Sample stock data for recommendations
   const stockUniverse = [
@@ -200,6 +203,98 @@ const PortfolioRecommendations = () => {
     }
   };
 
+  // Handle adding a stock to portfolio
+  const handleAddToPortfolio = (stock) => {
+    if (!userInvestments || !userInvestments.userData) return;
+    
+    setAddingStock(stock.symbol);
+    
+    try {
+      // Create a new stock investment object
+      const newStock = {
+        id: `stock_inv_${uuidv4().substring(0, 8)}`,
+        investmentType: 'stock',
+        stockName: stock.name,
+        symbol: stock.symbol,
+        brokerPlatform: 'zerodha', // Default platform
+        quantity: 1, // Default quantity
+        purchaseDate: new Date().toISOString().split('T')[0], // Today's date
+      };
+      
+      // Generate mock price history for the graph (similar to what you'd see in dashboard)
+      const priceHistory = generateMockPriceHistory(newStock);
+      newStock.priceHistory = priceHistory;
+      
+      // Clone the current user investments
+      const updatedUserInvestments = JSON.parse(JSON.stringify(userInvestments));
+      
+      // Add the new stock to the stocks array
+      updatedUserInvestments.userData.investments.stocks.push(newStock);
+      
+      // Update context with new investment data
+      setUserInvestments(updatedUserInvestments);
+      
+      // Mark this recommendation as added
+      const updatedRecommendations = stockRecommendations.map(rec => {
+        if (rec.symbol === stock.symbol) {
+          return { ...rec, added: true };
+        }
+        return rec;
+      });
+      setStockRecommendations(updatedRecommendations);
+      
+      // Show success notification
+      setNotification({
+        type: 'success',
+        message: `${stock.name} added to your portfolio!`
+      });
+      
+      // Update analysis since portfolio has changed
+      setTimeout(() => {
+        analyzePortfolio(updatedUserInvestments.userData.investments);
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Error adding stock to portfolio:', error);
+      setNotification({
+        type: 'error',
+        message: 'Failed to add stock. Please try again.'
+      });
+    } finally {
+      setAddingStock(null);
+      
+      // Clear notification after 5 seconds
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+    }
+  };
+  
+  // Generate mock price history for visualization
+  const generateMockPriceHistory = (stock) => {
+    const prices = [];
+    const days = 90; // 3 months of data
+    const today = new Date();
+    const basePrice = 1000 + Math.random() * 4000; // Random starting price between 1000-5000
+    let currentPrice = basePrice;
+    
+    for (let i = days; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      
+      // Add some randomness to price movement (between -2% and +2%)
+      const change = (Math.random() * 4 - 2) / 100;
+      currentPrice = currentPrice * (1 + change);
+      
+      prices.push({
+        date: date.toISOString().split('T')[0],
+        price: currentPrice
+      });
+    }
+    
+    return prices;
+  };
+
   if (isLoading) {
     return (
       <div>
@@ -214,6 +309,15 @@ const PortfolioRecommendations = () => {
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">Stock Recommendations</h2>
+      
+      {notification && (
+        <div className={`flex items-center gap-2 p-3 rounded-lg mb-4 ${
+          notification.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+        }`}>
+          {notification.type === 'success' ? <Check size={18} /> : <AlertCircle size={18} />}
+          <p>{notification.message}</p>
+        </div>
+      )}
       
       {/* Simple Portfolio Analysis */}
       <div className="mb-6 bg-white/5 rounded-lg p-4">
@@ -264,9 +368,27 @@ const PortfolioRecommendations = () => {
               </div>
               
               <div className="bg-gradient-to-r from-purple-500/20 to-indigo-500/20 p-3 text-center">
-                <button className="text-sm text-white hover:text-purple-300 transition-colors">
-                  Add to Portfolio
-                </button>
+                {stock.added ? (
+                  <div className="flex items-center justify-center text-sm text-green-400">
+                    <Check size={16} className="mr-1.5" />
+                    Added to Portfolio
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => handleAddToPortfolio(stock)}
+                    disabled={addingStock === stock.symbol}
+                    className="text-sm text-white hover:text-purple-300 transition-colors flex items-center justify-center w-full"
+                  >
+                    {addingStock === stock.symbol ? (
+                      <>
+                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                        Adding...
+                      </>
+                    ) : (
+                      'Add to Portfolio'
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           ))}
