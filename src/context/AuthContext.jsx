@@ -35,9 +35,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const signup = async (name, email, password) => {
+  const signInWithGoogle = async () => {
     try {
-      const user = await authService.register({ name, email, password });
+      const user = await authService.signInWithGoogle();
+      setUser(user);
+      return user;
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      throw error;
+    }
+  };
+
+  const signup = async (name, email, password, age, location) => {
+    try {
+      const user = await authService.register({ name, email, password, age, location });
       setUser(user);
       return user;
     } catch (error) {
@@ -57,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, signInWithGoogle, loading }}>
       {children}
     </AuthContext.Provider>
   );

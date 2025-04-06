@@ -119,7 +119,7 @@ const Navbar = () => {
             </div>
             
             <span className={`text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400 group-hover:from-purple-300 group-hover:to-indigo-300 transition-all duration-300 hidden sm:inline-block`}>
-              Portfolio Pro
+              InvestHub
             </span>
           </Link>
 

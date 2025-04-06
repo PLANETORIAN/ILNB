@@ -155,7 +155,7 @@ function Reports() {
   const TabButton = ({ name, icon, label }) => {
     // Clone the icon element and modify its color based on active state
     const iconWithColor = React.cloneElement(icon, {
-      className: `w-5 h-5 ${activeTab === name ? 'text-purple-500' : isDarkMode ? 'text-black' : 'text-black'}`
+      className: `w-5 h-5 ${activeTab === name ? 'text-purple-500' : isDarkMode ? 'text-white' : 'text-black'}`
     });
 
     return (
@@ -167,7 +167,7 @@ function Reports() {
               ? 'bg-purple-900/50 border border-purple-500/30 text-purple-500'
               : 'bg-purple-600/20 border border-purple-500/30 text-purple-500'
             : isDarkMode
-              ? 'hover:bg-purple-900/30 border border-transparent text-black'
+              ? 'hover:bg-purple-900/30 border border-transparent text-white'
               : 'hover:bg-purple-600/10 border border-transparent text-black'
         }`}
       >

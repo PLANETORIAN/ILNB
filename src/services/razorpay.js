@@ -40,7 +40,7 @@ export const initiatePayment = async (options) => {
     key: import.meta.env.VITE_RAZORPAY_KEY_ID,
     amount: 0, // in paise
     currency: 'INR',
-    name: 'ABCD Finance',
+    name: 'InvestHub',
     description: 'Investment Transaction',
     theme: {
       color: '#7c3aed', // Purple color to match theme

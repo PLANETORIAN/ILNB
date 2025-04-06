@@ -3,7 +3,9 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
-  onAuthStateChanged
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth';
 import { auth, db, isFirebaseAuthAvailable } from '../firebase.config';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
@@ -11,6 +13,9 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 // Mock user storage for development when Firebase auth is not available
 const mockUsers = {};
 let mockCurrentUser = null;
+
+// Initialize Google Auth Provider
+const googleProvider = new GoogleAuthProvider();
 
 // Helper function to store authentication data in local storage
 const saveUserToLocalStorage = (user) => {
@@ -86,7 +91,7 @@ const authService = {
   // Register new user
   register: async (userData) => {
     try {
-      const { name, email, password } = userData;
+      const { name, email, password, age, location } = userData;
       
       if (validateFirebaseAuth()) {
         // Create user with email and password
@@ -103,6 +108,8 @@ const authService = {
           await setDoc(doc(db, "users", user.uid), {
             name,
             email,
+            age,
+            location,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             portfolioIds: [],
@@ -137,6 +144,8 @@ const authService = {
           uid: `mock_${Date.now()}`,
           email,
           displayName: name,
+          age,
+          location,
           password, // Store for mock login (will be removed when returning)
           createdAt: new Date().toISOString()
         };
@@ -210,6 +219,65 @@ const authService = {
 
   // Get stored user without API call
   getStoredUser,
+
+  // Sign in with Google
+  signInWithGoogle: async () => {
+    try {
+      if (validateFirebaseAuth()) {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        
+        // Check if user exists in Firestore
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (!userDoc.exists()) {
+            // Create user in Firestore if they don't exist
+            await setDoc(doc(db, "users", user.uid), {
+              name: user.displayName || "",
+              email: user.email,
+              photoURL: user.photoURL,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+              portfolioIds: [],
+              preferences: {},
+              // Initialize with empty portfolio data
+              portfolio: {
+                mutualFunds: [],
+                stocks: [],
+                totalValue: 0,
+                platformBreakdown: {}
+              }
+            });
+            console.log("Google user document created in Firestore");
+          }
+        } catch (firestoreError) {
+          console.error("Error handling Google user document:", firestoreError);
+        }
+        
+        saveUserToLocalStorage(user);
+        return user;
+      } else {
+        // Mock Google login for development
+        console.log("Using mock Google authentication (Firebase Auth not available)");
+        
+        // Create a new mock Google user
+        const mockGoogleUser = {
+          uid: `google_mock_${Date.now()}`,
+          email: `google_user_${Date.now()}@gmail.com`,
+          displayName: 'Google Mock User',
+          photoURL: 'https://via.placeholder.com/100',
+          createdAt: new Date().toISOString()
+        };
+        
+        mockCurrentUser = mockGoogleUser;
+        saveUserToLocalStorage(mockCurrentUser);
+        return mockCurrentUser;
+      }
+    } catch (error) {
+      console.error('Google sign-in failed:', error.message || error);
+      throw error;
+    }
+  },
 };
 
 export default authService;

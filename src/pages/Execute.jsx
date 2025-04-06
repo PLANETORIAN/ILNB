@@ -252,7 +252,7 @@ function Execute() {
       const options = {
         amount: amountInPaise,
         currency: 'INR',
-        name: 'ABCD Finance',
+        name: 'InvestHub',
         description: `${selectedAsset.type === 'mf' ? 'Mutual Fund' : 'Stock'} Investment`,
         notes: {
           assetId: selectedAsset.id.toString(),
@@ -356,7 +356,7 @@ function Execute() {
     const options = {
       amount: amountInPaise,
       currency: 'INR',
-      name: 'ABCD Finance',
+      name: 'InvestHub',
       description: `Quick ${selectedAsset.type === 'mf' ? 'Investment' : 'Stock Purchase'}`,
       notes: {
         assetId: selectedAsset.id.toString(),
@@ -459,23 +459,23 @@ function Execute() {
     return (
       <div 
         onClick={() => setSelectedAsset(asset)}
-        className={`glass-effect p-6 cursor-pointer transition-all duration-500 relative group ${
+        className={`glass-effect p-3 sm:p-4 md:p-6 cursor-pointer transition-all duration-500 relative group ${
           isSelected
             ? 'border-2 border-purple-500 shadow-lg shadow-purple-500/20 transform scale-[1.02]' 
             : 'hover:border-purple-500/50 hover:shadow-md hover:shadow-purple-500/10 hover:transform hover:scale-[1.01]'
         }`}
       >
-        <div className="flex items-center space-x-4 relative z-10">
-          <div className={`w-12 h-12 rounded-full flex items-center justify-center transform transition-transform duration-500 group-hover:scale-110 ${
+        <div className="flex items-center space-x-3 sm:space-x-4 relative z-10">
+          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transform transition-transform duration-500 group-hover:scale-110 ${
             isSelected 
               ? 'bg-gradient-to-r from-purple-500 to-blue-500 animate-pulse'
               : 'bg-gradient-to-r from-purple-500/70 to-blue-600/70'
           }`}>
-            <span className="font-bold text-sm">{isStock ? asset.code : asset.type.toUpperCase()}</span>
+            <span className="font-bold text-xs sm:text-sm">{isStock ? asset.code : asset.type.toUpperCase()}</span>
           </div>
-          <div className="flex-1">
-            <h3 className="font-bold text-lg transition-all duration-300 group-hover:text-purple-400">{asset.name}</h3>
-            <div className="flex items-center space-x-2">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-base sm:text-lg transition-all duration-300 group-hover:text-purple-400 truncate">{asset.name}</h3>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
                 ₹{priceOrNav.toLocaleString()}
               </span>
@@ -484,7 +484,7 @@ function Execute() {
                   <span className="text-xs">NAV</span>
                 </Tooltip>
               )}
-              <span className={`text-sm flex items-center ${
+              <span className={`text-xs sm:text-sm flex items-center ${
                 asset.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
               }`}>
                 {asset.change.startsWith('+') 
@@ -499,15 +499,15 @@ function Execute() {
             </div>
             
             {/* Simple performance metric in plain English */}
-            <div className="mt-2">
-              <p className="text-sm text-purple-400 font-medium">
+            <div className="mt-1 sm:mt-2">
+              <p className="text-xs sm:text-sm text-purple-400 font-medium truncate">
                 {asset.performance}
               </p>
             </div>
             
             {/* Additional mutual fund information */}
             {!isStock && (
-              <div className="mt-1 grid grid-cols-2 gap-2">
+              <div className="mt-1 grid grid-cols-2 gap-x-2 gap-y-1">
                 <div className="flex items-center">
                   <span className="text-xs text-gray-400">Min Investment:</span>
                   <span className="text-xs ml-1">₹{asset.minInvestment.toLocaleString()}</span>
@@ -535,7 +535,7 @@ function Execute() {
             
             {/* Additional stock information */}
             {isStock && (
-              <div className="mt-1 grid grid-cols-2 gap-2">
+              <div className="mt-1 grid grid-cols-2 gap-x-2 gap-y-1">
                 <div className="flex items-center">
                   <span className="text-xs text-gray-400">Market Cap:</span>
                   <span className="text-xs ml-1">{asset.marketCap}</span>
@@ -556,7 +556,7 @@ function Execute() {
                 </div>
                 <div className="flex items-center">
                   <span className="text-xs text-gray-400">Rating:</span>
-                  <span className="text-xs ml-1">{asset.analystRating}</span>
+                  <span className="text-xs ml-1 truncate">{asset.analystRating}</span>
                 </div>
               </div>
             )}
@@ -567,42 +567,42 @@ function Execute() {
               target="_blank" 
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="text-blue-500 hover:text-blue-600">
-              <ExternalLink className="w-4 h-4" />
+              className="text-blue-500 hover:text-blue-600 ml-2 sm:ml-0">
+              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
             </a>
           )}
         </div>
 
         {/* Action buttons */}
-        <div className="mt-4 flex space-x-2">
+        <div className="mt-3 sm:mt-4 flex space-x-2">
           <button 
             onClick={(e) => handleCompare(asset, e)}
-            className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 transition-colors text-sm font-medium text-black"
+            className="flex-1 flex items-center justify-center py-1 sm:py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 transition-colors text-xs sm:text-sm font-medium text-white"
           >
-            <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
+            <BarChart3 className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 sm:mr-1.5" />
             Compare
           </button>
           <button 
             onClick={(e) => handleInvestNow(asset, e)}
-            className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 transition-colors text-sm font-medium text-black"
+            className="flex-1 flex items-center justify-center py-1 sm:py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 transition-colors text-xs sm:text-sm font-medium text-white"
           >
-            <DollarSign className="w-3.5 h-3.5 mr-1.5" />
+            <DollarSign className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 sm:mr-1.5" />
             Invest Now
           </button>
         </div>
 
         {/* Hover effect elements */}
         <div className="absolute inset-0 rounded-xl overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-xl transform translate-x-8 translate-y-[-50%] group-hover:translate-y-[-30%] transition-transform duration-700"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 rounded-full blur-xl transform translate-y-[50%] group-hover:translate-y-[30%] transition-transform duration-700"></div>
+          <div className="absolute top-0 right-0 w-20 sm:w-32 h-20 sm:h-32 bg-purple-500/5 rounded-full blur-xl transform translate-x-8 translate-y-[-50%] group-hover:translate-y-[-30%] transition-transform duration-700"></div>
+          <div className="absolute bottom-0 left-0 w-16 sm:w-24 h-16 sm:h-24 bg-blue-500/5 rounded-full blur-xl transform translate-y-[50%] group-hover:translate-y-[30%] transition-transform duration-700"></div>
         </div>
         
         {/* Sparkles effect on selection or hover */}
         <div className={`absolute top-2 right-2 transition-all duration-500 ${
           isSelected ? 'opacity-100 scale-100' : 'opacity-0 scale-0 group-hover:opacity-70 group-hover:scale-100'
         }`}>
-          <div className="bg-yellow-400/20 rounded-full p-1.5">
-            <Sparkles className="w-6 h-6 text-yellow-400 animate-pulse" />
+          <div className="bg-yellow-400/20 rounded-full p-1 sm:p-1.5">
+            <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-400 animate-pulse" />
           </div>
         </div>
         
@@ -625,27 +625,27 @@ function Execute() {
   }
 
   return (
-    <div className="pt-20 px-4 max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold mb-8 animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+    <div className="pt-20 px-4 max-w-7xl mx-auto pb-8">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 md:mb-8 animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
         Execute Trade
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6 animate-fade-in">
-          <div className="glass-effect p-6">
-            <div className="flex justify-between items-center mb-4">
+          <div className="glass-effect p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0">
               <h2 className="text-xl font-semibold">Select Asset</h2>
-              <div className="relative" ref={dropdownRef}>
+              <div className="relative w-full sm:w-auto" ref={dropdownRef}>
                 <button 
                   onClick={() => setShowDropdown(!showDropdown)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-black"
+                  className="flex items-center justify-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white w-full sm:w-auto"
                 >
                   <span>Filter</span>
                   <ChevronDown className="w-4 h-4" />
                 </button>
                 
                 {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
+                  <div className="absolute right-0 mt-2 w-full sm:w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
                     <div className="p-2">
                       <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
                         All Assets
@@ -668,7 +668,7 @@ function Execute() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search assets..."
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:outline-none transition-colors"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:outline-none transition-colors text-sm sm:text-base"
               />
             </div>
             
@@ -685,7 +685,7 @@ function Execute() {
 
         <div className="animate-fade-in trade-details-section" style={{ animationDelay: '300ms' }}>
           <Card className="glass-effect sticky top-24">
-            <h2 className="text-xl font-semibold mb-4">Trade Details</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-4">Trade Details</h2>
             {selectedAsset ? (
               <div className="space-y-4">
                 <div className="mb-4">
@@ -695,27 +695,26 @@ function Execute() {
                       <span></span>
                     </Tooltip>
                   </div>
-                  <div className={`relative flex rounded-lg overflow-hidden border-2 ${isDarkMode ? 'border-gray-600/30' : 'border-gray-300'} h-12`}>
-                    {/* Toggle buttons without sliding background */}
+                  <div className={`relative flex rounded-lg overflow-hidden border-2 ${isDarkMode ? 'border-gray-600/30' : 'border-gray-300'} h-10 sm:h-12`}>
                     <button
                       onClick={() => handleTransactionTypeChange('buy')}
-                      className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 mr-2 ${
+                      className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-sm sm:text-base hover:bg-white/10 mr-2 ${
                         transactionType === 'buy' ? 'bg-green-500/30' : ''
                       }`}
                       type="button"
                     >
-                      <span className="flex items-center justify-center text-black">
+                      <span className="flex items-center justify-center text-white">
                         Buy
                       </span>
                     </button>
                     <button
                       onClick={() => handleTransactionTypeChange('sell')}
-                      className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 ml-2 ${
+                      className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-sm sm:text-base hover:bg-white/10 ml-2 ${
                         transactionType === 'sell' ? 'bg-red-500/30' : ''
                       }`}
                       type="button"
                     >
-                      <span className="flex items-center justify-center text-black">
+                      <span className="flex items-center justify-center text-white">
                         Sell
                       </span>
                     </button>
@@ -730,27 +729,26 @@ function Execute() {
                         <span></span>
                       </Tooltip>
                     </div>
-                    <div className={`relative flex rounded-lg overflow-hidden border-2 ${isDarkMode ? 'border-gray-600/30' : 'border-gray-300'} h-12`}>
-                      {/* Toggle buttons without sliding background */}
+                    <div className={`relative flex rounded-lg overflow-hidden border-2 ${isDarkMode ? 'border-gray-600/30' : 'border-gray-300'} h-10 sm:h-12`}>
                       <button
                         onClick={() => handleInstallmentTypeChange('oneTime')}
-                        className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 mr-2 ${
+                        className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-sm sm:text-base hover:bg-white/10 mr-2 ${
                           installmentType === 'oneTime' ? 'bg-blue-500/30' : ''
                         }`}
                         type="button"
                       >
-                        <span className="flex items-center justify-center text-black">
+                        <span className="flex items-center justify-center text-white">
                           One-time
                         </span>
                       </button>
                       <button
                         onClick={() => handleInstallmentTypeChange('sip')}
-                        className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 ml-2 ${
+                        className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-sm sm:text-base hover:bg-white/10 ml-2 ${
                           installmentType === 'sip' ? 'bg-blue-500/30' : ''
                         }`}
                         type="button"
                       >
-                        <span className="flex items-center justify-center text-black">
+                        <span className="flex items-center justify-center text-white">
                           SIP
                         </span>
                       </button>
@@ -766,7 +764,7 @@ function Execute() {
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm sm:text-base"
                     placeholder="Enter amount"
                   />
                   
@@ -778,8 +776,8 @@ function Execute() {
                   
                   {/* Educational content based on investment type */}
                   {selectedAsset.type === 'mf' && (
-                    <div className={`mt-3 p-3 rounded-lg ${isDarkMode ? 'bg-purple-900/20 border border-purple-800/30' : 'bg-purple-50 border border-purple-100'}`}>
-                      <h4 className="text-sm font-medium mb-1">Investment Tips</h4>
+                    <div className={`mt-3 p-2 sm:p-3 rounded-lg ${isDarkMode ? 'bg-purple-900/20 border border-purple-800/30' : 'bg-purple-50 border border-purple-100'}`}>
+                      <h4 className="text-xs sm:text-sm font-medium mb-1">Investment Tips</h4>
                       {installmentType === 'sip' ? (
                         <p className="text-xs text-gray-400">
                           SIPs help reduce risk through rupee cost averaging and are ideal for long-term wealth creation. Consider investing for at least 5-7 years.
@@ -793,8 +791,8 @@ function Execute() {
                   )}
                   
                   {selectedAsset.type === 'stock' && (
-                    <div className={`mt-3 p-3 rounded-lg ${isDarkMode ? 'bg-blue-900/20 border border-blue-800/30' : 'bg-blue-50 border border-blue-100'}`}>
-                      <h4 className="text-sm font-medium mb-1">Investment Tips</h4>
+                    <div className={`mt-3 p-2 sm:p-3 rounded-lg ${isDarkMode ? 'bg-blue-900/20 border border-blue-800/30' : 'bg-blue-50 border border-blue-100'}`}>
+                      <h4 className="text-xs sm:text-sm font-medium mb-1">Investment Tips</h4>
                       <p className="text-xs text-gray-400">
                         Stocks may be more volatile than mutual funds. {selectedAsset.analystRating} suggest this could be a {selectedAsset.analystRating.includes('Buy') ? 'good addition' : 'stock to research further'} for your portfolio.
                       </p>
@@ -802,14 +800,14 @@ function Execute() {
                   )}
                 </div>
 
-                <div className="p-4 bg-white/5 rounded-lg">
+                <div className="p-3 sm:p-4 bg-white/5 rounded-lg">
                   <div className="flex justify-between mb-2">
-                    <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>Asset</span>
-                    <span>{selectedAsset.name}</span>
+                    <span className={`${isDarkMode ? "text-gray-400" : "text-gray-600"} text-sm`}>Asset</span>
+                    <span className="text-sm sm:text-base">{selectedAsset.name}</span>
                   </div>
                   <div className="flex justify-between mb-2">
                     <div className="flex items-center">
-                      <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
+                      <span className={`${isDarkMode ? "text-gray-400" : "text-gray-600"} text-sm`}>
                         {selectedAsset.type === 'stock' ? 'Price' : 'NAV'}
                       </span>
                       {selectedAsset.type === 'mf' && (
@@ -818,24 +816,24 @@ function Execute() {
                         </Tooltip>
                       )}
                     </div>
-                    <span>₹{(selectedAsset.type === 'stock' ? selectedAsset.price : selectedAsset.nav).toLocaleString()}</span>
+                    <span className="text-sm sm:text-base">₹{(selectedAsset.type === 'stock' ? selectedAsset.price : selectedAsset.nav).toLocaleString()}</span>
                   </div>
                   
                   {selectedAsset.type === 'mf' && installmentType === 'sip' && (
                     <div className="flex justify-between mb-2">
                       <div className="flex items-center">
-                        <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>Frequency</span>
+                        <span className={`${isDarkMode ? "text-gray-400" : "text-gray-600"} text-sm`}>Frequency</span>
                         <Tooltip content="How often your investment will be automatically made. Monthly SIPs are most common for building long-term wealth.">
                           <span></span>
                         </Tooltip>
                       </div>
-                      <span>Monthly</span>
+                      <span className="text-sm sm:text-base">Monthly</span>
                     </div>
                   )}
                   
                   <div className="flex justify-between">
                     <div className="flex items-center">
-                      <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
+                      <span className={`${isDarkMode ? "text-gray-400" : "text-gray-600"} text-sm`}>
                         {installmentType === 'sip' ? 'Monthly Investment' : 'Total'}
                       </span>
                       {installmentType === 'sip' && (
@@ -844,33 +842,33 @@ function Execute() {
                         </Tooltip>
                       )}
                     </div>
-                    <span>₹{calculateTotal().toLocaleString()}</span>
+                    <span className="text-sm sm:text-base font-medium">₹{calculateTotal().toLocaleString()}</span>
                   </div>
                 </div>
 
                 {isSuccess ? (
                   <div className="bg-green-100 dark:bg-green-800/30 text-green-800 dark:text-green-300 p-3 rounded-lg flex items-center">
-                    <Check className="w-5 h-5 mr-2" />
-                    <span>Transaction successful!</span>
+                    <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                    <span className="text-sm sm:text-base">Transaction successful!</span>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     <button
                       onClick={handleExecute}
                       disabled={isProcessing || !amount}
-                      className={`w-full button-animate text-lg ${
+                      className={`w-full button-animate text-base sm:text-lg ${
                         transactionType === 'buy' 
                           ? 'bg-gradient-to-r from-green-600 to-blue-600' 
                           : 'bg-gradient-to-r from-red-600 to-orange-600'
-                      } text-white py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed relative`}
+                      } ${!amount ? 'text-gray-300' : 'text-white'} py-2 sm:py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed relative`}
                     >
                       {isProcessing ? (
                         <div className="flex items-center justify-center">
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                          <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                           Processing...
                         </div>
                       ) : (
-                        <span className="text-white">
+                        <span>
                           {transactionType === 'buy' ? 'Buy' : 'Sell'} 
                           {selectedAsset.type === 'stock' ? ` ${amount || ''} Shares` : ` ₹${amount || '0'}`}
                           {installmentType === 'sip' ? ' Monthly SIP' : ''}
@@ -881,9 +879,9 @@ function Execute() {
                     <button
                       onClick={handleQuickBuy}
                       disabled={isProcessing}
-                      className="w-full button-animate bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                      className="w-full button-animate bg-gradient-to-r from-purple-600 to-blue-600 text-white py-2 sm:py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm sm:text-base"
                     >
-                      <Zap className="w-4 h-4 mr-2" />
+                      <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                       {selectedAsset.type === 'stock' 
                         ? `Quick Buy 1 Share of ${selectedAsset.name}` 
                         : `Quick Invest ₹${selectedAsset.minInvestment.toLocaleString()}`
@@ -898,9 +896,9 @@ function Execute() {
                       href={selectedAsset.mfuLink} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors flex items-center justify-center"
+                      className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors flex items-center justify-center text-xs sm:text-sm"
                     >
-                      <ExternalLink className="w-4 h-4 mr-2" />
+                      <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                       Execute on MFU Portal
                       <Tooltip content="MF Utility (MFU) is a shared service platform for the mutual fund industry, providing a single point of service for investors.">
                         <span></span>
@@ -910,13 +908,13 @@ function Execute() {
                 )}
               </div>
             ) : (
-              <div className="text-center py-12 px-6">
-                <div className="w-16 h-16 bg-white/5 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <ArrowUpDown className="w-6 h-6 text-gray-400" />
+              <div className="text-center py-8 sm:py-12 px-4 sm:px-6">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/5 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <ArrowUpDown className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-300 mb-2">No Asset Selected</h3>
-                <p className="text-gray-400 mb-4">Select an asset from the list to view trade options</p>
-                <div className="w-20 h-1 bg-white/10 mx-auto"></div>
+                <h3 className="text-base sm:text-lg font-medium text-gray-300 mb-2">No Asset Selected</h3>
+                <p className="text-sm text-gray-400 mb-4">Select an asset from the list to view trade options</p>
+                <div className="w-16 sm:w-20 h-1 bg-white/10 mx-auto"></div>
               </div>
             )}
           </Card>

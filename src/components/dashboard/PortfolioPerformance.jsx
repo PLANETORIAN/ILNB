@@ -14,6 +14,24 @@ import { useUserInvestments } from '../../context/UserInvestmentsContext';
 import axios from 'axios';
 import { ChevronDown } from 'lucide-react';
 
+// Custom tooltip component for better design
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white dark:bg-gray-800 p-3 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 text-sm transition-all duration-150 transform scale-105">
+        <p className="font-medium text-black dark:text-white mb-1">{label}</p>
+        <div className="flex items-center">
+          <div className="w-2 h-2 rounded-full bg-cyan-400 mr-2"></div>
+          <p className="text-black dark:text-cyan-400 font-medium">
+            Price: ₹{payload[0].value.toFixed(2)}
+          </p>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 const PortfolioPerformance = () => {
   const [investmentData, setInvestmentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -341,8 +359,7 @@ const PortfolioPerformance = () => {
                           tickFormatter={value => `₹${value.toFixed(0)}`}
                         />
                         <Tooltip 
-                          formatter={(value) => [`₹${value.toFixed(2)}`, 'Price']}
-                          labelFormatter={(label) => label}
+                          content={<CustomTooltip />}
                         />
                         <Area 
                           type="monotone" 
@@ -370,8 +387,7 @@ const PortfolioPerformance = () => {
                           tickFormatter={value => `₹${value.toFixed(0)}`}
                         />
                         <Tooltip 
-                          formatter={(value) => [`₹${value.toFixed(2)}`, 'Price']}
-                          labelFormatter={(label) => label}
+                          content={<CustomTooltip />}
                         />
                         <Line 
                           type="monotone" 
