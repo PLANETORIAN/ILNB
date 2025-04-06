@@ -647,13 +647,13 @@ function Execute() {
                 {showDropdown && (
                   <div className="absolute right-0 mt-2 w-full sm:w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
                     <div className="p-2">
-                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
+                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-white" onClick={() => setShowDropdown(false)}>
                         All Assets
                       </div>
-                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
+                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-white" onClick={() => setShowDropdown(false)}>
                         Mutual Funds
                       </div>
-                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
+                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-white" onClick={() => setShowDropdown(false)}>
                         Stocks
                       </div>
                     </div>

@@ -54,7 +54,7 @@ const Landing = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className={`text-center ${isVisible ? 'animate-fade-in' : 'opacity-0'}`}>
             <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
-              Portfolio Pro
+              InvestHub
             </h1>
             <p className="text-xl md:text-2xl mb-10 max-w-2xl mx-auto">
               Your all-in-one solution for tracking, analyzing, and optimizing your investment portfolio
