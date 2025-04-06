@@ -626,154 +626,196 @@ function Execute() {
 
   return (
     <div className="pt-20 px-4 max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold mb-8 animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-        Execute Trade
-      </h1>
-
+      <div className="mb-8 animate-fade-in">
+        <h1 className="text-2xl md:text-3xl font-bold mb-4">Execute Trade</h1>
+        <p className={isDarkMode ? "text-gray-400" : "text-gray-600"}>Buy or sell stocks and mutual funds with confidence.</p>
+      </div>
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6 animate-fade-in">
-          <div className="glass-effect p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Select Asset</h2>
-              <div className="relative" ref={dropdownRef}>
-                <button 
-                  onClick={() => setShowDropdown(!showDropdown)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-black"
-                >
-                  <span>Filter</span>
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-                
-                {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
-                    <div className="p-2">
-                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
-                        All Assets
+        <div className="lg:col-span-2 space-y-6">
+          <Card className="glass-effect p-0">
+            <div className="p-4 md:p-6 border-b border-gray-700">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h2 className="text-xl font-semibold">Select Asset</h2>
+                <div className="relative w-full sm:w-auto" ref={dropdownRef}>
+                  <div 
+                    onClick={() => setShowDropdown(!showDropdown)}
+                    className="cursor-pointer w-full sm:w-64 px-4 py-3 rounded-lg bg-white/10 flex items-center justify-between"
+                  >
+                    {selectedAsset ? (
+                      <span>{selectedAsset.name}</span>
+                    ) : (
+                      <span className="text-gray-400">Select an asset</span>
+                    )}
+                    <ChevronDown className="w-5 h-5" />
+                  </div>
+                  
+                  {showDropdown && (
+                    <div className="absolute top-full left-0 mt-2 w-full sm:w-64 max-h-96 overflow-y-auto z-30 rounded-lg glass-effect border border-gray-700 shadow-xl">
+                      <div className="p-2">
+                        <input
+                          type="text"
+                          placeholder="Search assets..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full p-2 bg-white/10 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
                       </div>
-                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
-                        Mutual Funds
-                      </div>
-                      <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-black" onClick={() => setShowDropdown(false)}>
-                        Stocks
+                      <div className="p-2">
+                        {filteredAssets.length > 0 ? (
+                          filteredAssets.map((asset) => (
+                            <div
+                              key={`${asset.type}-${asset.id}`}
+                              onClick={() => {
+                                setSelectedAsset(asset);
+                                setShowDropdown(false);
+                              }}
+                              className="px-3 py-2 hover:bg-white/10 rounded-md cursor-pointer flex items-center space-x-2"
+                            >
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                                asset.type === 'stock' ? 'bg-green-500/80' : 'bg-blue-500/80'
+                              }`}>
+                                <span className="text-xs font-bold">{asset.type === 'stock' ? 'S' : 'M'}</span>
+                              </div>
+                              <div className="flex-1">
+                                <div className="font-medium text-sm">{asset.name}</div>
+                                <div className="text-xs text-gray-400">
+                                  {asset.type === 'stock' ? `${asset.exchange}: ${asset.code}` : asset.description}
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="p-4 text-center text-gray-400">No assets found</div>
+                        )}
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
             
-            <div className="mb-4">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search assets..."
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:outline-none transition-colors"
-              />
+            <div className="p-4 md:p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Asset Cards */}
+                {allAssets.slice(0, 6).map((asset) => (
+                  <AssetCard key={`${asset.type}-${asset.id}`} asset={asset} />
+                ))}
+              </div>
             </div>
-            
-            <div className="grid gap-4">
-              {filteredAssets.map((asset) => (
-                <AssetCard 
-                  key={asset.id} 
-                  asset={asset}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="animate-fade-in trade-details-section" style={{ animationDelay: '300ms' }}>
-          <Card className="glass-effect sticky top-24">
+          </Card>
+          
+          {/* Trade Details Section */}
+          <Card className="glass-effect p-4 md:p-6 trade-details-section">
             <h2 className="text-xl font-semibold mb-4">Trade Details</h2>
+            
             {selectedAsset ? (
-              <div className="space-y-4">
-                <div className="mb-4">
-                  <div className="flex items-center mb-2">
-                    <p className="text-sm font-medium">Transaction Type</p>
-                    <Tooltip content="Buy: Purchase new units/shares. Sell: Convert your investment back to cash.">
-                      <span></span>
-                    </Tooltip>
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row justify-between bg-white/5 p-4 rounded-lg">
+                  <div>
+                    <h3 className="font-medium">{selectedAsset.name}</h3>
+                    <p className="text-sm text-gray-400">{selectedAsset.type === 'stock' ? `${selectedAsset.exchange}: ${selectedAsset.code}` : selectedAsset.description}</p>
                   </div>
-                  <div className={`relative flex rounded-lg overflow-hidden border-2 ${isDarkMode ? 'border-gray-600/30' : 'border-gray-300'} h-12`}>
-                    {/* Toggle buttons without sliding background */}
-                    <button
-                      onClick={() => handleTransactionTypeChange('buy')}
-                      className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 mr-2 ${
-                        transactionType === 'buy' ? 'bg-green-500/30' : ''
-                      }`}
-                      type="button"
-                    >
-                      <span className="flex items-center justify-center text-black">
-                        Buy
-                      </span>
-                    </button>
-                    <button
-                      onClick={() => handleTransactionTypeChange('sell')}
-                      className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 ml-2 ${
-                        transactionType === 'sell' ? 'bg-red-500/30' : ''
-                      }`}
-                      type="button"
-                    >
-                      <span className="flex items-center justify-center text-black">
-                        Sell
-                      </span>
-                    </button>
+                  <div className="mt-4 sm:mt-0 flex items-center space-x-2">
+                    <div className="text-2xl font-bold">
+                      ₹{selectedAsset.type === 'stock' ? selectedAsset.price : selectedAsset.nav}
+                    </div>
+                    <span className={`flex items-center ${
+                      selectedAsset.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
+                    }`}>
+                      {selectedAsset.change.startsWith('+') 
+                        ? <ArrowUp className="w-4 h-4 mr-1" /> 
+                        : <ArrowDown className="w-4 h-4 mr-1" />
+                      }
+                      {selectedAsset.change}
+                    </span>
                   </div>
                 </div>
                 
-                {selectedAsset.type === 'mf' && (
-                  <div className="mb-4">
-                    <div className="flex items-center mb-2">
-                      <p className="text-sm font-medium">Investment Frequency</p>
-                      <Tooltip content={getFinancialTermExplanation('sip')}>
-                        <span></span>
-                      </Tooltip>
-                    </div>
-                    <div className={`relative flex rounded-lg overflow-hidden border-2 ${isDarkMode ? 'border-gray-600/30' : 'border-gray-300'} h-12`}>
-                      {/* Toggle buttons without sliding background */}
-                      <button
-                        onClick={() => handleInstallmentTypeChange('oneTime')}
-                        className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 mr-2 ${
-                          installmentType === 'oneTime' ? 'bg-blue-500/30' : ''
-                        }`}
-                        type="button"
-                      >
-                        <span className="flex items-center justify-center text-black">
-                          One-time
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => handleInstallmentTypeChange('sip')}
-                        className={`flex-1 py-2 text-center font-medium transition-all z-10 relative text-base hover:bg-white/10 ml-2 ${
-                          installmentType === 'sip' ? 'bg-blue-500/30' : ''
-                        }`}
-                        type="button"
-                      >
-                        <span className="flex items-center justify-center text-black">
-                          SIP
-                        </span>
-                      </button>
-                    </div>
+                <div className="space-y-4">
+                  {/* Transaction Type Tabs */}
+                  <div className="flex flex-col xs:flex-row gap-3 w-full bg-white/5 p-2 rounded-lg">
+                    <button
+                      onClick={() => handleTransactionTypeChange('buy')}
+                      className={`flex-1 py-3 rounded-lg flex justify-center transition-colors ${
+                        transactionType === 'buy'
+                          ? 'bg-gradient-to-r from-purple-500 to-blue-600 text-white'
+                          : 'hover:bg-white/10'
+                      }`}
+                    >
+                      Buy
+                    </button>
+                    <button
+                      onClick={() => handleTransactionTypeChange('sell')}
+                      className={`flex-1 py-3 rounded-lg flex justify-center transition-colors ${
+                        transactionType === 'sell'
+                          ? 'bg-gradient-to-r from-purple-500 to-blue-600 text-white'
+                          : 'hover:bg-white/10'
+                      }`}
+                    >
+                      Sell
+                    </button>
                   </div>
-                )}
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    {installmentType === 'sip' ? 'Monthly amount' : 'Amount'}
-                  </label>
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                    placeholder="Enter amount"
-                  />
                   
-                  {selectedAsset.type === 'mf' && (
-                    <p className="text-xs mt-1 text-gray-400">
-                      Minimum investment: ₹{selectedAsset.minInvestment.toLocaleString()}
-                    </p>
+                  {/* Amount Input */}
+                  <div>
+                    <label className="block text-sm mb-2">
+                      {selectedAsset.type === 'stock' 
+                        ? 'Number of Shares' 
+                        : transactionType === 'buy' 
+                          ? 'Investment Amount (₹)' 
+                          : 'Redemption Amount (₹)'
+                      }
+                    </label>
+                    <input
+                      type="number"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="w-full p-3 bg-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder={selectedAsset.type === 'stock' 
+                        ? 'Enter number of shares' 
+                        : 'Enter amount'
+                      }
+                      min="0"
+                    />
+                    {selectedAsset.type === 'mf' && transactionType === 'buy' && (
+                      <p className="mt-2 text-sm text-gray-400 flex items-center">
+                        <Info className="w-4 h-4 mr-2" />
+                        Min. investment: ₹{selectedAsset.minInvestment.toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* Buy Options - SIP or One-time */}
+                  {transactionType === 'buy' && (
+                    <div>
+                      <label className="block text-sm mb-2">Investment Type</label>
+                      <div className="flex flex-col xs:flex-row gap-3 w-full bg-white/5 p-2 rounded-lg">
+                        <button
+                          onClick={() => handleInstallmentTypeChange('oneTime')}
+                          className={`flex-1 py-3 rounded-lg flex justify-center transition-colors ${
+                            installmentType === 'oneTime'
+                              ? 'bg-gradient-to-r from-purple-500 to-blue-600 text-white'
+                              : 'hover:bg-white/10'
+                          }`}
+                        >
+                          One-time
+                        </button>
+                        <button
+                          onClick={() => handleInstallmentTypeChange('sip')}
+                          className={`flex-1 py-3 rounded-lg flex items-center justify-center transition-colors ${
+                            installmentType === 'sip'
+                              ? 'bg-gradient-to-r from-purple-500 to-blue-600 text-white'
+                              : 'hover:bg-white/10'
+                          }`}
+                        >
+                          SIP
+                          <Tooltip content={getFinancialTermExplanation('sip')}>
+                            <span className="text-xs">(Monthly)</span>
+                          </Tooltip>
+                        </button>
+                      </div>
+                    </div>
                   )}
                   
                   {/* Educational content based on investment type */}

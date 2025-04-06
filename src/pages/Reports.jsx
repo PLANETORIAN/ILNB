@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import Card from '@/components/common/Card';
-import { ArrowUp, ArrowDown, AlertTriangle, BarChart2, LineChart, PieChart, Calendar } from 'lucide-react';
+import { ArrowUp, ArrowDown, AlertTriangle, BarChart2, LineChart, PieChart, Calendar, ArrowUpDown } from 'lucide-react';
 import React from 'react';
 import userInvestmentData from '../data/userInvestmentData.json';
 
@@ -161,7 +161,7 @@ function Reports() {
     return (
       <button 
         onClick={() => setActiveTab(name)}
-        className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 ${
+        className={`flex items-center space-x-2 px-3 py-2 text-sm sm:px-4 sm:py-3 sm:text-base rounded-lg transition-all duration-300 ${
           activeTab === name 
             ? isDarkMode 
               ? 'bg-purple-900/50 border border-purple-500/30 text-purple-500'
@@ -172,7 +172,7 @@ function Reports() {
         }`}
       >
         {iconWithColor}
-        <span>{label}</span>
+        <span className="hidden xs:inline">{label}</span>
       </button>
     );
   };
@@ -182,10 +182,10 @@ function Reports() {
       case 'performance':
         return (
           <div className="space-y-6 animate-fade-in">
-            <Card className="glass-effect p-6">
+            <Card className="glass-effect p-4 md:p-6">
               <h3 className="text-xl font-semibold mb-4">Portfolio Performance</h3>
-              <div className="h-64 bg-gradient-to-b from-purple-500/10 to-blue-500/10 rounded-lg p-4">
-                <div className="flex justify-between items-end h-52">
+              <div className="h-64 bg-gradient-to-b from-purple-500/10 to-blue-500/10 rounded-lg p-4 overflow-x-auto">
+                <div className="flex justify-between items-end h-52 min-w-[400px]">
                   {performanceData.map((item, index) => (
                     <div key={index} className="flex flex-col items-center w-1/6">
                       <div className="relative w-full">
@@ -202,7 +202,7 @@ function Reports() {
                   ))}
                 </div>
               </div>
-              <div className="mt-4 flex justify-between">
+              <div className="mt-4 flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0">
                 <div>
                   <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>Overall Growth</span>
                   <p className="text-2xl font-bold text-green-400">+18.4%</p>
@@ -215,7 +215,7 @@ function Reports() {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="glass-effect p-6">
+              <Card className="glass-effect p-4 md:p-6">
                 <h3 className="text-xl font-semibold mb-4">Key Metrics</h3>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-3 rounded-lg bg-gradient-to-r from-purple-500/10 to-transparent">
@@ -237,7 +237,7 @@ function Reports() {
                 </div>
               </Card>
 
-              <Card className="glass-effect p-6">
+              <Card className="glass-effect p-4 md:p-6">
                 <h3 className="text-xl font-semibold mb-4">Investment Growth</h3>
                 <div className="h-48 relative mt-4">
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-700 rounded"></div>
@@ -271,10 +271,10 @@ function Reports() {
       case 'allocation':
         return (
           <div className="space-y-6 animate-fade-in">
-            <Card className="glass-effect p-6">
+            <Card className="glass-effect p-4 md:p-6">
               <h3 className="text-xl font-semibold mb-4">Asset Allocation</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center py-4">
                   <div className="relative w-48 h-48">
                     <svg viewBox="0 0 100 100" className="w-full h-full">
                       {allocationData.map((item, index) => {
@@ -354,7 +354,7 @@ function Reports() {
               </div>
             </Card>
 
-            <Card className="glass-effect p-6">
+            <Card className="glass-effect p-4 md:p-6">
               <h3 className="text-xl font-semibold mb-4">Allocation Recommendations</h3>
               <div className="space-y-4">
                 <div className="p-4 rounded-lg bg-gradient-to-r from-yellow-500/20 to-transparent">
@@ -385,10 +385,10 @@ function Reports() {
       case 'transactions':
         return (
           <div className="space-y-6 animate-fade-in">
-            <Card className="glass-effect p-6">
+            <Card className="glass-effect p-4 md:p-6">
               <h3 className="text-xl font-semibold mb-4">Recent Transactions</h3>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-full">
+                <table className="w-full min-w-[500px]">
                   <thead>
                     <tr className="border-b border-gray-700">
                       <th className="pb-3 text-left">Asset</th>
@@ -428,9 +428,9 @@ function Reports() {
               </div>
             </Card>
 
-            <Card className="glass-effect p-6">
+            <Card className="glass-effect p-4 md:p-6">
               <h3 className="text-xl font-semibold mb-4">Transaction Summary</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-4 rounded-lg bg-gradient-to-r from-purple-500/10 to-transparent">
                   <span className={`block text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Total Buy Volume</span>
                   <span className="block text-2xl font-bold">$41,750</span>
@@ -450,7 +450,7 @@ function Reports() {
       case 'alerts':
         return (
           <div className="space-y-6 animate-fade-in">
-            <Card className="glass-effect p-6">
+            <Card className="glass-effect p-4 md:p-6">
               <h3 className="text-xl font-semibold mb-4">Alerts & Notifications</h3>
               <div className="space-y-4">
                 {alerts.map((alert, index) => {
@@ -480,7 +480,7 @@ function Reports() {
                       className={`p-4 rounded-lg bg-gradient-to-r ${bgColor} to-transparent animate-fade-in hover:from-opacity-30 transition-all cursor-pointer`}
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
-                      <div className="flex justify-between">
+                      <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
                         <div className="flex items-center space-x-2">
                           {icon}
                           <span className="font-medium">{alert.message}</span>
@@ -497,22 +497,22 @@ function Reports() {
                   <div className="flex items-center justify-between">
                     <span>Market Alerts</span>
                     <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" value="" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-purple-500 peer-focus:ring-2 peer-focus:ring-purple-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                     </label>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Portfolio Updates</span>
                     <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" value="" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-purple-500 peer-focus:ring-2 peer-focus:ring-purple-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                     </label>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span>Price Alerts</span>
+                    <span>Weekly Digest</span>
                     <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" value="" className="sr-only peer" />
-                      <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      <input type="checkbox" className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-purple-500 peer-focus:ring-2 peer-focus:ring-purple-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                     </label>
                   </div>
                 </div>
@@ -527,18 +527,23 @@ function Reports() {
 
   return (
     <div className="pt-20 px-4 max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold mb-8 animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-        Reports & Analytics
-      </h1>
-
-      <div className="flex flex-wrap gap-2 mb-6">
-        <TabButton name="performance" icon={<LineChart className="w-5 h-5" />} label="Performance" />
-        <TabButton name="allocation" icon={<PieChart className="w-5 h-5" />} label="Allocation" />
-        <TabButton name="transactions" icon={<Calendar className="w-5 h-5" />} label="Transactions" />
-        <TabButton name="alerts" icon={<AlertTriangle className="w-5 h-5" />} label="Alerts" />
+      <div className="mb-8 animate-fade-in">
+        <h1 className="text-2xl md:text-3xl font-bold mb-4">Reports & Analytics</h1>
+        <p className={isDarkMode ? "text-gray-400" : "text-gray-600"}>Track your investments and analyze performance.</p>
       </div>
 
-      {renderTabContent()}
+      <div className="glass-effect p-4 rounded-xl mb-6 overflow-x-auto">
+        <div className="flex space-x-2 md:space-x-4 min-w-max">
+          <TabButton name="performance" icon={<BarChart2 />} label="Performance" />
+          <TabButton name="allocation" icon={<PieChart />} label="Allocation" />
+          <TabButton name="transactions" icon={<ArrowUpDown className="w-5 h-5" />} label="Transactions" />
+          <TabButton name="alerts" icon={<AlertTriangle />} label="Alerts" />
+        </div>
+      </div>
+      
+      <div className="animate-fade-in">
+        {renderTabContent()}
+      </div>
     </div>
   );
 }
